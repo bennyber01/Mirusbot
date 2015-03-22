@@ -36,9 +36,13 @@ SensorsModule::SensorsModule()
     frontSensorsData.LSensorDist = 0.0f;
     frontSensorsData.CSensorDist = 0.0f;
     frontSensorsData.RSensorDist = 0.0f;
-    bumpersData.LBumper = 0;
-    bumpersData.CBumper = 0;
-    bumpersData.RBumper = 0;
+    bumpersData.FLLBumper = 0;
+    bumpersData.FLBumper  = 0;
+    bumpersData.FCBumper  = 0;
+    bumpersData.FRBumper  = 0;
+    bumpersData.FRRBumper = 0;
+    bumpersData.RLBumper  = 0;
+    bumpersData.RRBumper  = 0;
 
     lastUpdateTime_SensorL = 0;
     lastUpdateTime_SensorC = 0;
@@ -53,25 +57,36 @@ SensorsModule::~SensorsModule()
 void SensorsModule::Init()
 {
     // no need to init alanog pins for input
-    // sonar pins are init in ping module
-    pinMode(L_BUMPER_PIN, INPUT_PULLUP);
-    pinMode(C_BUMPER_PIN, INPUT_PULLUP);
-    pinMode(R_BUMPER_PIN, INPUT_PULLUP);
+    pinMode(FRONT_LL_BUMPER_PIN, INPUT);
+    pinMode(FRONT_L_BUMPER_PIN,  INPUT);
+    pinMode(FRONT_C_BUMPER_PIN,  INPUT);
+    pinMode(FRONT_R_BUMPER_PIN,  INPUT);
+    pinMode(FRONT_RR_BUMPER_PIN, INPUT);
+    pinMode(REAR_L_BUMPER_PIN,   INPUT);
+    pinMode(REAR_R_BUMPER_PIN,   INPUT);
 }
 
 void SensorsModule::Update()
 {
-    bumpersData.LBumper = digitalRead(L_BUMPER_PIN);
+    bumpersData.FLLBumper = !digitalRead(FRONT_LL_BUMPER_PIN);
+    //delay(2);
+    bumpersData.FLBumper = digitalRead(FRONT_L_BUMPER_PIN);
     //delay(2);
     UpdateFrontLeftDistanceSensorValue();
     //delay(2);
-    bumpersData.CBumper = digitalRead(C_BUMPER_PIN);
+    bumpersData.FCBumper = digitalRead(FRONT_C_BUMPER_PIN);
     //delay(2);
     UpdateFrontCenterDistanceSensorValue();
     //delay(2);
-    bumpersData.RBumper = digitalRead(R_BUMPER_PIN);
+    bumpersData.FRBumper = digitalRead(FRONT_R_BUMPER_PIN);
+    //delay(2);
+    bumpersData.FRRBumper = !digitalRead(FRONT_RR_BUMPER_PIN);
     //delay(2);
     UpdateFrontRightDistanceSensorValue();
+    //delay(2);
+    bumpersData.RLBumper = digitalRead(REAR_L_BUMPER_PIN);
+    //delay(2);
+    bumpersData.RRBumper = digitalRead(REAR_R_BUMPER_PIN);
     //delay(2);
 }
 

@@ -1,17 +1,69 @@
 #include <DisplayModule.h>
 
+#define SCREEN_0       0
+#define SCREEN_1       1
+#define SCREEN_2       2
+#define SCREEN_3       3
+
+#define BUMPER_TOP_ON  4
+#define BUMPER_TOP_OFF 5
+#define BUMPER_MID_ON  6
+#define BUMPER_MID_OFF 7
+
 uint8_t scr_0[8] = {B11111,B11111,B11111,B11011,B11111,B11111,B11111};
 uint8_t scr_1[8] = {B11111,B11111,B11011,B11111,B11011,B11111,B11111};
 uint8_t scr_2[8] = {B11111,B11111,B11011,B11111,B10101,B11111,B11111};
 uint8_t scr_3[8] = {B11111,B11111,B10101,B11111,B10101,B11111,B11111};
-uint8_t scr_4[8] = {B11111,B10101,B11111,B11011,B11111,B10101,B11111};
-uint8_t scr_5[8] = {B11111,B10101,B11111,B10101,B11111,B10101,B11111};
+//uint8_t scr_4[8] = {B11111,B10101,B11111,B11011,B11111,B10101,B11111};
+//uint8_t scr_5[8] = {B11111,B10101,B11111,B10101,B11111,B10101,B11111};
 
-uint8_t box_0[8] = {B11111,B10001,B10001,B10001,B10001,B10001,B11111};
-uint8_t box_1[8] = {B11111,B11111,B11111,B11111,B11111,B11111,B11111};
+uint8_t bumper_Top1[8] = {B11111,
+                          B11111,
+                          B11111,
+                          B00000,
+                          B00000,
+                          B00000,
+                          B00000};
 
-#define BUMPER_ON 6
-#define BUMPER_OFF 7
+uint8_t bumper_Top0[8] = {B00000,
+                          B11111,
+                          B00000,
+                          B00000,
+                          B00000,
+                          B00000,
+                          B00000};
+
+uint8_t bumper_Mid1[8] = {B00000,
+                          B00000,
+                          B11111,
+                          B11111,
+                          B11111,
+                          B00000,
+                          B00000};
+
+uint8_t bumper_Mid0[8] = {B00000,
+                          B00000,
+                          B00000,
+                          B11111,
+                          B00000,
+                          B00000,
+                          B00000};
+
+uint8_t bumper_Bot1[8] = {B00000,
+                          B00000,
+                          B00000,
+                          B00000,
+                          B11111,
+                          B11111,
+                          B11111};
+
+uint8_t bumper_Bot0[8] = {B00000,
+                          B00000,
+                          B00000,
+                          B00000,
+                          B00000,
+                          B11111,
+                          B00000};
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #define printByte(args)  write(args);
@@ -40,14 +92,14 @@ void DisplayModule::Init()
     lcd.init();                                     // initialize the lcd
     lcd.backlight();
 
-    lcd.createChar(0, scr_0);
-    lcd.createChar(1, scr_1);
-    lcd.createChar(2, scr_2);
-    lcd.createChar(3, scr_3);
-    lcd.createChar(4, scr_4);
-    lcd.createChar(5, scr_5);
-    lcd.createChar(BUMPER_ON, box_1);
-    lcd.createChar(BUMPER_OFF, box_0);
+    lcd.createChar(SCREEN_0       , scr_0);
+    lcd.createChar(SCREEN_1       , scr_1);
+    lcd.createChar(SCREEN_2       , scr_2);
+    lcd.createChar(SCREEN_3       , scr_3);
+    lcd.createChar(BUMPER_TOP_ON  , bumper_Top1);
+    lcd.createChar(BUMPER_TOP_OFF , bumper_Top0);
+    lcd.createChar(BUMPER_MID_ON  , bumper_Mid1);
+    lcd.createChar(BUMPER_MID_OFF , bumper_Mid0);
 
     pinMode(DISPLAY_NEXT_SCREEN_PIN, INPUT_PULLUP); // set pin to input
 }
@@ -80,16 +132,6 @@ void DisplayModule::Print(const FrontSensorsData & data)
     isUpdateScr[1] |= isUpdate;
 }
 
-void DisplayModule::Print(const BumpersData & data)
-{
-    bool isUpdate = bumpersData.LBumper != data.LBumper ||
-                    bumpersData.CBumper != data.CBumper ||
-                    bumpersData.RBumper != data.RBumper;
-
-    bumpersData = data;
-    isUpdateScr[1] |= isUpdate;
-}
-
 void DisplayModule::Print(const WheelsLocation & loc)
 {
     bool isUpdate = wheelsLocation.leftWheelLoc.x  != loc.leftWheelLoc.x ||
@@ -99,6 +141,20 @@ void DisplayModule::Print(const WheelsLocation & loc)
 
     wheelsLocation = loc;
     isUpdateScr[2] |= isUpdate;
+}
+
+void DisplayModule::Print(const BumpersData & data)
+{
+    bool isUpdate = bumpersData.FLLBumper != data.FLLBumper ||
+                    bumpersData.FLBumper  != data.FLBumper  ||
+                    bumpersData.FCBumper  != data.FCBumper  ||
+                    bumpersData.FRBumper  != data.FRBumper  ||
+                    bumpersData.FRRBumper != data.FRRBumper ||
+                    bumpersData.RLBumper  != data.RLBumper  ||
+                    bumpersData.RRBumper  != data.RRBumper;
+
+    bumpersData = data;
+    isUpdateScr[3] |= isUpdate;
 }
 
 void DisplayModule::Update()
@@ -124,6 +180,7 @@ void DisplayModule::Update()
                 case 0:     ShowScreen0();      break;
                 case 1:     ShowScreen1();      break;
                 case 2:     ShowScreen2();      break;
+                case 3:     ShowScreen3();      break;
             }
             lcd.setCursor(19, 0);
             lcd.printByte(screenNum);
@@ -156,38 +213,6 @@ void DisplayModule::ShowScreen0()
 
 void DisplayModule::ShowScreen1()
 {
-    lcd.setCursor(0, 0);
-    lcd.print("Bumpers L:");
-
-    if (bumpersData.LBumper)
-    {
-        lcd.printByte(BUMPER_ON);
-    }
-    else
-    {
-        lcd.printByte(BUMPER_OFF);
-    }
-
-    lcd.print(" C:");
-    if (bumpersData.CBumper)
-    {
-        lcd.printByte(BUMPER_ON);
-    }
-    else
-    {
-        lcd.printByte(BUMPER_OFF);
-    }
-
-    lcd.print(" R:");
-    if (bumpersData.RBumper)
-    {
-        lcd.printByte(BUMPER_ON);
-    }
-    else
-    {
-        lcd.printByte(BUMPER_OFF);
-    }
-
     lcd.setCursor(0, 1);
     lcd.print("LSensor Dist:");
     lcd.print(frontSensorsData.LSensorDist, 1);
@@ -231,4 +256,39 @@ void DisplayModule::ShowScreen2()
     lcd.print(",");
     lcd.print(pos.y);
     lcd.print(")");
+}
+
+void DisplayModule::ShowScreen3()
+{
+    lcd.setCursor(7, 1);
+    if (bumpersData.FLLBumper) { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }
+    if (bumpersData.FLBumper)  { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }
+    if (bumpersData.FCBumper)  { lcd.printByte(BUMPER_TOP_ON); } else { lcd.printByte(BUMPER_TOP_OFF); }
+    if (bumpersData.FRBumper)  { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }
+    if (bumpersData.FRRBumper) { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }
+
+    lcd.setCursor(7, 2);
+    if (bumpersData.RLBumper)
+    {
+        lcd.printByte(BUMPER_MID_ON);
+        lcd.printByte(BUMPER_MID_ON);
+    }
+    else
+    {
+        lcd.printByte(BUMPER_MID_OFF);
+        lcd.printByte(BUMPER_MID_OFF);
+    }
+
+    lcd.print(" ");
+
+    if (bumpersData.RRBumper)
+    {
+        lcd.printByte(BUMPER_MID_ON);
+        lcd.printByte(BUMPER_MID_ON);
+    }
+    else
+    {
+        lcd.printByte(BUMPER_MID_OFF);
+        lcd.printByte(BUMPER_MID_OFF);
+    }
 }

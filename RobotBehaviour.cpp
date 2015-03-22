@@ -19,9 +19,13 @@ void Cerebellum::UpdateRobotBehaviour()
 {
     BumpersData bumpersData = sensors.GetBumpersData();
 
-    bool isHitSonthing = bumpersData.LBumper ||
-                         bumpersData.CBumper ||
-                         bumpersData.RBumper;
+    bool isHitSonthing = bumpersData.FLLBumper ||
+                         bumpersData.FLBumper  ||
+                         bumpersData.FCBumper  ||
+                         bumpersData.FRBumper  ||
+                         bumpersData.FRRBumper ||
+                         bumpersData.RRBumper  ||
+                         bumpersData.RLBumper;
 
     if (isHitSonthing)
     {

@@ -44,9 +44,13 @@ struct FrontSensorsData
 struct BumpersData
 {
     BumpersData() { memset(this, 0, sizeof(BumpersData)); }
-    UCHAR LBumper;       // left bumper
-    UCHAR CBumper;       // center bumper
-    UCHAR RBumper;       // right bumper
+    UCHAR FLLBumper;       // front most left bumper
+    UCHAR FLBumper;        // front left bumper
+    UCHAR FCBumper;        // front center bumper
+    UCHAR FRBumper;        // front right bumper
+    UCHAR FRRBumper;       // front most right bumper
+    UCHAR RLBumper;        // rear left bumper
+    UCHAR RRBumper;        // rear right bumper
 };
 
 #pragma pack(pop) //back to whatever the previous packing mode was

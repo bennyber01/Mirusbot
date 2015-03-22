@@ -5,7 +5,7 @@
 #include "LiquidCrystal_I2C/LiquidCrystal_I2C.h"
 #include "RobotDefinitions.h"
 
-#define MAX_NUM_OF_SCREENS  3
+#define MAX_NUM_OF_SCREENS  4
 
 class DisplayModule : public ArduinoModule
 {
@@ -38,12 +38,13 @@ private:
     MotorsTicks motorsTicks;                // scr: 0
     MotorsSpeed motorsSpeed;                // scr: 0
     FrontSensorsData frontSensorsData;      // scr: 1
-    BumpersData bumpersData;                // scr: 1
     WheelsLocation wheelsLocation;          // scr: 2
+    BumpersData bumpersData;                // scr: 3
 
     void ShowScreen0();
     void ShowScreen1();
     void ShowScreen2();
+    void ShowScreen3();
 };
 
 #endif
