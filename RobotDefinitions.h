@@ -3,7 +3,8 @@
 
 #include "Vector2D.h"
 
-#define WHEEL_RADIUS    7
+#define WHEEL_RADIUS    1.6370222718023520250513758518316
+#define WHEELS_DISTANCE 1
 
 #pragma pack(push, 1) // exact fit - no padding
 
