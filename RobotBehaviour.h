@@ -7,7 +7,7 @@ public:
     RobotBehaviour();
     ~RobotBehaviour();
 
-private:
+protected:
     bool isHandlingEvent;
 };
 

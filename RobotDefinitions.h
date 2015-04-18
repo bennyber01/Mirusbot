@@ -3,6 +3,7 @@
 
 #include "Vector2D.h"
 
+// 1cm = 35deg : for mmx.runDegrees
 #define WHEEL_RADIUS    1.6370222718023520250513758518316
 #define WHEELS_DISTANCE 1
 
