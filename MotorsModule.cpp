@@ -2,10 +2,7 @@
 
 MotorsModule::MotorsModule()
 {
-    motorsSpeed.LMotorSpeed = 0;
-    motorsSpeed.RMotorSpeed = 0;
-    motorsTicks.LMotorTick = 0;
-    motorsTicks.RMotorTick = 0;
+    isHandlingEvent = false;
 }
 
 MotorsModule::~MotorsModule()
@@ -15,11 +12,11 @@ MotorsModule::~MotorsModule()
 
 void MotorsModule::Reset()
 {
-    motorsSpeed.LMotorSpeed = 0;
-    motorsSpeed.RMotorSpeed = 0;
-    motorsTicks.LMotorTick  = 0;
-    motorsTicks.RMotorTick  = 0;
     mmx.reset();                // resets the encoder positions to zero
+    mmx.setSpeed(MOTOR_L, 0);
+    mmx.setSpeed(MOTOR_R, 0);
+    mmx.resetEncoder(MOTOR_L);
+    mmx.resetEncoder(MOTOR_R);
 }
 
 void MotorsModule::Init()
@@ -71,8 +68,6 @@ void MotorsModule::SetMotorsSpeed(const MotorsSpeed & newSpeeds)
         mmx.runUnlimited(MOTOR_R, MMX_Direction_Reverse,-newSpeeds.RMotorSpeed);
     else
         mmx.runUnlimited(MOTOR_R, MMX_Direction_Forward, newSpeeds.RMotorSpeed);
-
-    motorsSpeed = newSpeeds;
 }
 
 void MotorsModule::StopAllMotors()
@@ -89,16 +84,53 @@ void MotorsModule::StopAllMotors()
 //                   MMX_Next_Action_BrakeHold);
 }
 
-MotorsSpeed MotorsModule::GetMotorsSpeed()
+void MotorsModule::GetMotorsSpeed(MotorsSpeed & motorsSpeed)
 {
     motorsSpeed.LMotorSpeed = mmx.getSpeed(MOTOR_L);
     motorsSpeed.RMotorSpeed = mmx.getSpeed(MOTOR_R);
-    return motorsSpeed;
 }
 
-MotorsTicks MotorsModule::GetMotorsTicks()
+void MotorsModule::GetMotorsTicks(MotorsTicks & motorsTicks)
 {
     motorsTicks.LMotorTick = mmx.getEncoderPosition(MOTOR_L);
     motorsTicks.RMotorTick = mmx.getEncoderPosition(MOTOR_R);
-    return motorsTicks;
+
+//    mmx.resetEncoder(MOTOR_L);
+//    mmx.resetEncoder(MOTOR_R);
+}
+
+void MotorsModule::GoDistance_cm(int cm)
+{
+    // 1cm = 35 deg
+    isHandlingEvent = true;
+
+    //mmx.stop(MMX_Motor_Both, MMX_Next_Action_BrakeHold);
+
+    long degs = cm * 35;
+    //mmx.runDegrees(MMX_Motor_Both,
+//    mmx.runDegrees(MMX_Motor_2,
+//                   MMX_Direction_Forward,
+//                   MMX_Speed_Medium,
+//                   degs,
+//                   MMX_Completion_Wait_For,
+//                   //MMX_Completion_Dont_Wait,
+//                   MMX_Next_Action_BrakeHold);
+
+    mmx.startMotorsInSync();
+    mmx.runTachometer(
+                      MMX_Motor_Both,
+                      //MMX_Motor_2,
+                      MMX_Direction_Forward,
+                      MMX_Speed_Medium,
+                      degs,
+                      MMX_Move_Relative,
+                      //MMX_Completion_Wait_For,
+                      MMX_Completion_Dont_Wait,
+                      MMX_Next_Action_BrakeHold
+                     );
+}
+
+bool MotorsModule::IsHandlingEvent()
+{
+    return isHandlingEvent;
 }

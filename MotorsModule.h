@@ -4,8 +4,8 @@
 #include "CommunicationDefinitions.h"
 #include <NXTI2CDevice-master/NXTMMX.h>
 
-#define MOTOR_L MMX_Motor_1
-#define MOTOR_R MMX_Motor_2
+#define MOTOR_R MMX_Motor_1
+#define MOTOR_L MMX_Motor_2
 
 class MotorsModule : public ArduinoModule
 {
@@ -21,15 +21,17 @@ public:
     void StopAllMotors();
 
     void SetMotorsSpeed(const MotorsSpeed & newSpeeds);
-    MotorsSpeed GetMotorsSpeed();
+    void GetMotorsSpeed(MotorsSpeed & motorsSpeed);
+    void GetMotorsTicks(MotorsTicks & motorsTicks);
 
-    MotorsTicks GetMotorsTicks();
+    bool IsHandlingEvent();
+
+    void GoDistance_cm(int cm);
 
 private:
-    MotorsSpeed motorsSpeed;
-    MotorsTicks motorsTicks;
-
     NXTMMX mmx;
+
+    bool isHandlingEvent;
 };
 
 #endif

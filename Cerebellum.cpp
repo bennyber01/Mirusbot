@@ -24,12 +24,16 @@ void Cerebellum::Update()
     motors.Update();
     sensors.Update();
 
-    MotorsTicks motorsTicks = motors.GetMotorsTicks();
+    MotorsTicks motorsTicks;
+    motors.GetMotorsTicks(motorsTicks);
     robotWeelsLocation = computeNewLocation(robotWeelsLocation, motorsTicks);
+
+    MotorsSpeed motorsSpeed;
+    motors.GetMotorsSpeed(motorsSpeed);
 
     // set relevent paramt to disp.
     disp.Print(motorsTicks);
-    disp.Print(motors.GetMotorsSpeed());
+    disp.Print(motorsSpeed);
     disp.Print(sensors.GetFrontSensorsData());
     disp.Print(sensors.GetBumpersData());
     disp.Print(robotWeelsLocation);

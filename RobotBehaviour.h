@@ -1,6 +1,8 @@
 #ifndef ROBOT_BEHAVIOUR_H
 #define ROBOT_BEHAVIOUR_H
 
+#include "RobotDefinitions.h"
+
 class RobotBehaviour
 {
 public:
@@ -9,6 +11,8 @@ public:
 
 protected:
     bool isHandlingEvent;
+
+    WheelsLocation robotWeelsLocation;
 };
 
 #endif
