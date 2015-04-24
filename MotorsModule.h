@@ -27,11 +27,17 @@ public:
     bool IsHandlingEvent();
 
     void GoDistance_cm(int cm);
+    void Rotate_deg(int deg, bool rotateRight);
+
+    int GetBatteryVoltage();
 
 private:
     NXTMMX mmx;
 
+    MotorsTicks ticks;
     bool isHandlingEvent;
+
+    bool IsTachoDone();
 };
 
 #endif

@@ -76,6 +76,8 @@ DisplayModule::DisplayModule() : lcd(0x27,20,4)  // set the LCD address to 0x27 
     lastScreenChangeTime = 0;
     lastScreenUpdateTime = 0;
 
+    voltage = 0;
+
     memset(isUpdateScr, 0, sizeof(isUpdateScr));
 
     screenNum = -1;
@@ -154,6 +156,13 @@ void DisplayModule::Print(const BumpersData & data)
                     bumpersData.RRBumper  != data.RRBumper;
 
     bumpersData = data;
+    isUpdateScr[3] |= isUpdate;
+}
+
+void DisplayModule::Print(int voltage)
+{
+    bool isUpdate = this -> voltage != voltage;
+    this -> voltage = voltage;
     isUpdateScr[3] |= isUpdate;
 }
 
@@ -260,6 +269,10 @@ void DisplayModule::ShowScreen2()
 
 void DisplayModule::ShowScreen3()
 {
+    lcd.setCursor(0, 0);
+    lcd.print("Voltage: ");
+    lcd.print(voltage);
+
     lcd.setCursor(7, 1);
     if (bumpersData.FLLBumper) { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }
     if (bumpersData.FLBumper)  { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }

@@ -20,6 +20,7 @@ public:
     void Print(const FrontSensorsData & data);
     void Print(const BumpersData & data);
     void Print(const WheelsLocation & wheelsLocation);
+    void Print(int voltage);
 
     void ShowNextScreen() { newScreenNum = (newScreenNum + 1) % MAX_NUM_OF_SCREENS; }
 
@@ -40,6 +41,7 @@ private:
     FrontSensorsData frontSensorsData;      // scr: 1
     WheelsLocation wheelsLocation;          // scr: 2
     BumpersData bumpersData;                // scr: 3
+    int voltage;                            // scr: 3
 
     void ShowScreen0();
     void ShowScreen1();

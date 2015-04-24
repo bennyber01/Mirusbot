@@ -37,6 +37,7 @@ void Cerebellum::Update()
     disp.Print(sensors.GetFrontSensorsData());
     disp.Print(sensors.GetBumpersData());
     disp.Print(robotWeelsLocation);
+    disp.Print(motors.GetBatteryVoltage());
 
     UpdateRobotBehaviour();
 
