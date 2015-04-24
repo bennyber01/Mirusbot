@@ -96,10 +96,14 @@ void MotorsModule::GetMotorsSpeed(MotorsSpeed & motorsSpeed)
 
 void MotorsModule::GetMotorsTicks(MotorsTicks & motorsTicks)
 {
+    int lt = mmx.getEncoderPosition(MOTOR_L);
+    int rt = mmx.getEncoderPosition(MOTOR_R);
+
+    motorsTicks.LMotorTick = lt - ticks.LMotorTick;
+    motorsTicks.RMotorTick = rt - ticks.RMotorTick;
+
     if (IsTachoDone())
     {
-        motorsTicks.LMotorTick = 0;
-        motorsTicks.RMotorTick = 0;
         mmx.resetEncoder(MOTOR_L);
         mmx.resetEncoder(MOTOR_R);
         ticks.LMotorTick = 0;
@@ -107,11 +111,6 @@ void MotorsModule::GetMotorsTicks(MotorsTicks & motorsTicks)
     }
     else
     {
-        int lt = mmx.getEncoderPosition(MOTOR_L);
-        int rt = mmx.getEncoderPosition(MOTOR_R);
-
-        motorsTicks.LMotorTick = lt - ticks.LMotorTick;
-        motorsTicks.RMotorTick = rt - ticks.RMotorTick;
         ticks.LMotorTick = lt;
         ticks.RMotorTick = rt;
     }
