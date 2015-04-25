@@ -28,6 +28,7 @@ public:
 
     void GoDistance_cm(int cm);
     void Rotate_deg(int deg, bool rotateRight);
+    void RotateInPlace_deg(int deg, bool rotateRight);
 
     int GetBatteryVoltage();
 

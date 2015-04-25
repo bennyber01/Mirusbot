@@ -172,6 +172,48 @@ void MotorsModule::Rotate_deg(int deg, bool rotateRight)
                      );
 }
 
+void MotorsModule::RotateInPlace_deg(int deg, bool rotateRight)
+{
+    isHandlingEvent = true;
+
+    // 180 deg = 2520 tachos
+    long tachos = (long) ((double)deg) * 2524.0 / 360.0;
+
+    uint8_t l_motor_dir = MMX_Direction_Reverse;
+    uint8_t r_motor_dir = MMX_Direction_Forward;
+    if (rotateRight)
+    {
+        l_motor_dir = MMX_Direction_Forward;
+        r_motor_dir = MMX_Direction_Reverse;
+    }
+
+//    mmx.startMotorsInSync();
+    mmx.runTachometer(
+                      MOTOR_L,
+                      l_motor_dir,
+                      MMX_Speed_Medium,
+                      tachos,
+                      MMX_Move_Relative,
+                      //MMX_Completion_Wait_For,
+                      MMX_Completion_Dont_Wait,
+                      MMX_Next_Action_Float
+                      //MMX_Next_Action_BrakeHold
+                     );
+
+    mmx.runTachometer(
+                      MOTOR_R,
+                      r_motor_dir,
+                      MMX_Speed_Medium,
+                      tachos,
+                      MMX_Move_Relative,
+                      //MMX_Completion_Wait_For,
+                      MMX_Completion_Dont_Wait,
+                      MMX_Next_Action_Float
+                      //MMX_Next_Action_BrakeHold
+                     );
+
+}
+
 bool MotorsModule::IsHandlingEvent()
 {
     return isHandlingEvent;
