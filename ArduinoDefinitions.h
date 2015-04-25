@@ -19,11 +19,14 @@
 #define FRONT_C_BUMPER_PIN                  6
 #define FRONT_R_BUMPER_PIN                  5
 #define FRONT_RR_BUMPER_PIN                 2
-#define REAR_L_BUMPER_PIN                   11
-#define REAR_R_BUMPER_PIN                   10
+#define REAR_L_BUMPER_PIN                   12
+#define REAR_R_BUMPER_PIN                   13
 
 // display pins
-#define DISPLAY_NEXT_SCREEN_PIN             4
+#define DISPLAY_SCREEN_0_PIN                11
+#define DISPLAY_SCREEN_1_PIN                10
+#define DISPLAY_SCREEN_2_PIN                9
+#define DISPLAY_SCREEN_3_PIN                8
 
 #define I2C_ADDRESS 0x09
 

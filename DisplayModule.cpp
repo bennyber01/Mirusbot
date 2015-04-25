@@ -103,7 +103,10 @@ void DisplayModule::Init()
     lcd.createChar(BUMPER_MID_ON  , bumper_Mid1);
     lcd.createChar(BUMPER_MID_OFF , bumper_Mid0);
 
-    pinMode(DISPLAY_NEXT_SCREEN_PIN, INPUT_PULLUP); // set pin to input
+    pinMode(DISPLAY_SCREEN_0_PIN, INPUT); // set pin to input
+    pinMode(DISPLAY_SCREEN_1_PIN, INPUT); // set pin to input
+    pinMode(DISPLAY_SCREEN_2_PIN, INPUT); // set pin to input
+    pinMode(DISPLAY_SCREEN_3_PIN, INPUT); // set pin to input
 }
 
 void DisplayModule::Print(const MotorsTicks & ticks)
@@ -171,11 +174,17 @@ void DisplayModule::Update()
     unsigned long time = millis();
     if (lastScreenChangeTime < time - 400)
     {
-        if (digitalRead(DISPLAY_NEXT_SCREEN_PIN) == LOW)
-        {
-            ShowNextScreen();
+        if (screenNum != 0 && digitalRead(DISPLAY_SCREEN_0_PIN) == HIGH)
+            newScreenNum = 0;
+        else if (screenNum != 1 && digitalRead(DISPLAY_SCREEN_1_PIN) == HIGH)
+            newScreenNum = 1;
+        else if (screenNum != 2 && digitalRead(DISPLAY_SCREEN_2_PIN) == HIGH)
+            newScreenNum = 2;
+        else if (screenNum != 3 && digitalRead(DISPLAY_SCREEN_3_PIN) == HIGH)
+            newScreenNum = 3;
+
+        if (screenNum != newScreenNum)
             lastScreenChangeTime = time;
-        }
     }
 
     if (lastScreenUpdateTime < time - 400)

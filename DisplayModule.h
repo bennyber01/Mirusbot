@@ -22,8 +22,6 @@ public:
     void Print(const WheelsLocation & wheelsLocation);
     void Print(int voltage);
 
-    void ShowNextScreen() { newScreenNum = (newScreenNum + 1) % MAX_NUM_OF_SCREENS; }
-
     void Update();
 
 private:

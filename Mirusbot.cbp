@@ -654,6 +654,8 @@
 		<Compiler>
 			<Add directory="." />
 		</Compiler>
+		<Unit filename="ActionQueue.cpp" />
+		<Unit filename="ActionQueue.h" />
 		<Unit filename="ArduinoDefinitions.h" />
 		<Unit filename="Cerebellum.cpp" />
 		<Unit filename="Cerebellum.h" />
