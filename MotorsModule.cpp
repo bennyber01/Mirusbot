@@ -108,6 +108,7 @@ void MotorsModule::GetMotorsTicks(MotorsTicks & motorsTicks)
         mmx.resetEncoder(MOTOR_R);
         ticks.LMotorTick = 0;
         ticks.RMotorTick = 0;
+        isHandlingEvent = false;
     }
     else
     {

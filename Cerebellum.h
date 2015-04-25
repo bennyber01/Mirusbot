@@ -24,6 +24,8 @@ private:
     SensorsModule sensors;
 
     void UpdateRobotBehaviour();
+
+    void HandleEvent(const ActionEntry & entry);
 };
 
 #endif

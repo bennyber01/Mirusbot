@@ -2,6 +2,7 @@
 #define ROBOT_BEHAVIOUR_H
 
 #include "RobotDefinitions.h"
+#include "ActionQueue.h"
 
 class RobotBehaviour
 {
@@ -10,8 +11,7 @@ public:
     ~RobotBehaviour();
 
 protected:
-    bool isHandlingEvent;
-
+    ActionQueue actionQueue;
     WheelsLocation robotWeelsLocation;
 };
 
