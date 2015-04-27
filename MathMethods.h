@@ -27,7 +27,7 @@ inline double ComputeRotationInPlaceAngleToCoord(WheelsLocation robotWeelsLocati
 {
     Vector2D from = robotWeelsLocation.leftWheelLoc - robotWeelsLocation.rightWheelLoc;
     Vector2D pos = (robotWeelsLocation.leftWheelLoc + robotWeelsLocation.rightWheelLoc) * 0.5;
-    from.Set(-from.y, from.x);
+    from.Set(from.y, -from.x);
     Vector2D to = coord - pos;
     return ComputeAngle_deg(from, to);
 }
