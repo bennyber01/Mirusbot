@@ -1,14 +1,17 @@
 #include "cerebellum.h"
 #include "Matrix2x2.h"
+#include "MathMethods.h"
 
 RobotBehaviour::RobotBehaviour()
 {
     robotWeelsLocation.rightWheelLoc.Set(WHEELS_DISTANCE / 2.0,  0);
     robotWeelsLocation.leftWheelLoc.Set(-robotWeelsLocation.rightWheelLoc.x, 0);
 
-    actionQueue.Push(AT__GO_FORWARD, 10);
+    isGoHome = false;
+
+    actionQueue.Push(AT__GO_FORWARD, 20);
     actionQueue.Push(AT__ROTATE_IN_PLACE_RIGHT, 90);
-    actionQueue.Push(AT__GO_FORWARD, 10);
+    actionQueue.Push(AT__GO_FORWARD, 20);
 }
 
 RobotBehaviour::~RobotBehaviour()
@@ -32,6 +35,11 @@ void Cerebellum::UpdateRobotBehaviour()
         bool isNewEvent = actionQueue.Pop(entry);
         if (isNewEvent)
             HandleEvent(entry);
+        else if (!isGoHome)
+        {
+            GoHome();
+            isGoHome = true;
+        }
     }
 }
 
@@ -70,6 +78,24 @@ void Cerebellum::HandleEvent(const ActionEntry & entry)
     }
 
 }
+
+void RobotBehaviour::GoHome()
+{
+    int ang_deg = (int) ComputeRotationInPlaceAngleToCoord(robotWeelsLocation, Vector2D(0, 0));
+
+    Vector2D pos = (robotWeelsLocation.leftWheelLoc + robotWeelsLocation.rightWheelLoc) * 0.5;
+    int dist_cm = (int) ComputeDistance(pos, Vector2D(0, 0));
+
+    if (ang_deg >= 0.0)
+        actionQueue.Push(AT__ROTATE_IN_PLACE_RIGHT, ang_deg);
+    else
+        actionQueue.Push(AT__ROTATE_IN_PLACE_LEFT, -ang_deg);
+    actionQueue.Push(AT__GO_FORWARD, dist_cm);
+}
+
+
+
+
 
 //void Cerebellum::UpdateRobotBehaviour()
 //{

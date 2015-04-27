@@ -1,12 +1,7 @@
 #include "robot_location_computation.h"
 #include <math.h>
 #include "Matrix2x2.h"
-
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
-
-double deg_2_rad(double deg) { return deg * M_PI / 180.0; }
-double rad_2_deg(double rad) { return rad * 180.0 / M_PI; }
+#include "MathMethods.h"
 
 WheelsLocation compute_new_location_no_rotation(const WheelsLocation & oldLocation, double wheel_l_dist, double wheel_r_dist)
 {

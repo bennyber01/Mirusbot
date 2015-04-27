@@ -22,7 +22,7 @@ struct Vector2D
         this -> y = y;
     }
 
-    double Length()
+    double Length() const
     {
         return sqrt(x * x + y * y);
     }

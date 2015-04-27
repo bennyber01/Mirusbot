@@ -665,6 +665,7 @@
 		<Unit filename="DistanceSensorFilter.h" />
 		<Unit filename="LiquidCrystal_I2C/LiquidCrystal_I2C.cpp" />
 		<Unit filename="LiquidCrystal_I2C/LiquidCrystal_I2C.h" />
+		<Unit filename="MathMethods.h" />
 		<Unit filename="Matrix2x2.h" />
 		<Unit filename="MotorsModule.cpp" />
 		<Unit filename="MotorsModule.h" />

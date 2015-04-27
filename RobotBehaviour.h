@@ -13,6 +13,9 @@ public:
 protected:
     ActionQueue actionQueue;
     WheelsLocation robotWeelsLocation;
+
+    bool isGoHome;
+    void GoHome();
 };
 
 #endif
