@@ -16,8 +16,7 @@ RobotBehaviour::RobotBehaviour()
 //    actionQueue.Push(AT__GO_FORWARD, 20);
 
     eventQueue.Push(ET__GO_TO, 0, 20);
-    eventQueue.Push(ET__GO_TO, 150, 20);
-    eventQueue.Push(ET__GO_TO, 0, 20);
+    eventQueue.Push(ET__GO_TO, 40, 20);
 }
 
 RobotBehaviour::~RobotBehaviour()
@@ -110,7 +109,6 @@ void RobotBehaviour::HandleEvent(const EventEntry & entry)
         commandQueue.Push(CT__STOP);
         break;
     }
-
 }
 
 void RobotBehaviour::GoToLocation(double x, double y)
