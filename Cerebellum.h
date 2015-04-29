@@ -25,7 +25,7 @@ private:
 
     void UpdateRobotBehaviour();
 
-    void HandleEvent(const ActionEntry & entry);
+    void HandleCommand(const CommandEntry & entry);
 };
 
 #endif

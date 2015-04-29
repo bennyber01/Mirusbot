@@ -11,11 +11,17 @@ public:
     ~RobotBehaviour();
 
 protected:
-    ActionQueue actionQueue;
+    EventQueue eventQueue;               // holds main events
+    CommandQueue commandQueue;           // hold each event substages for execution
     WheelsLocation robotWeelsLocation;
 
+    void HandleEvent(const EventEntry & entry);
+
     bool isGoHome;
-    void GoHome();
+    bool isLookStraight;
+    void LookStraight();
+
+    void GoToLocation(double x, double y);
 };
 
 #endif

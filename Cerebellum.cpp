@@ -16,6 +16,7 @@ void Cerebellum::Init()
     disp.Init();
     motors.Init();
     sensors.Init();
+    //Serial.begin(115200);
 }
 
 void Cerebellum::Update()
@@ -26,6 +27,15 @@ void Cerebellum::Update()
 
     MotorsTicks motorsTicks;
     motors.GetMotorsTicks(motorsTicks);
+
+    //if (motorsTicks.LMotorTick > 0 || motorsTicks.RMotorTick > 0)
+    //{
+    //    Serial.print(motorsTicks.LMotorTick);
+    //    Serial.print(", ");
+    //    Serial.println(motorsTicks.RMotorTick);
+    //    Serial.println("");
+    //}
+
     robotWeelsLocation = computeNewLocation(robotWeelsLocation, motorsTicks);
 
     MotorsSpeed motorsSpeed;

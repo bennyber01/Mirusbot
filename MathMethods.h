@@ -32,6 +32,14 @@ inline double ComputeRotationInPlaceAngleToCoord(WheelsLocation robotWeelsLocati
     return ComputeAngle_deg(from, to);
 }
 
+inline double ComputeRotationInPlaceAngleToLookAtDirection(WheelsLocation robotWeelsLocation, const Vector2D & lookAt)
+{
+    Vector2D from = robotWeelsLocation.leftWheelLoc - robotWeelsLocation.rightWheelLoc;
+    Vector2D pos = (robotWeelsLocation.leftWheelLoc + robotWeelsLocation.rightWheelLoc) * 0.5;
+    from.Set(from.y, -from.x);
+    return ComputeAngle_deg(from, lookAt);
+}
+
 #pragma pack(pop) //back to whatever the previous packing mode was
 
 #endif

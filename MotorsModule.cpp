@@ -105,15 +105,25 @@ void MotorsModule::GetMotorsTicks(MotorsTicks & motorsTicks)
     if (IsTachoDone())
     {
         mmx.resetEncoder(MOTOR_L);
+        delay(5);
         mmx.resetEncoder(MOTOR_R);
+        delay(5);
         ticks.LMotorTick = 0;
         ticks.RMotorTick = 0;
         isHandlingEvent = false;
     }
     else
     {
-        ticks.LMotorTick = lt;
-        ticks.RMotorTick = rt;
+        if (motorsTicks.LMotorTick > 35 || motorsTicks.RMotorTick > 35)
+        {
+            ticks.LMotorTick = lt;
+            ticks.RMotorTick = rt;
+        }
+        else
+        {
+            motorsTicks.LMotorTick = 0;
+            motorsTicks.RMotorTick = 0;
+        }
     }
 }
 

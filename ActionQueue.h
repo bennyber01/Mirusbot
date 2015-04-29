@@ -3,21 +3,21 @@
 
 const int EVENT_QUEUE_SIZE = 10;
 
-enum ActionType
+enum CommandType
 {
-    AT__NONE,
-    AT__STOP,
-    AT__GO_FORWARD,
-    AT__GO_BACKWARD,
-    AT__ROTATE_RIGHT,
-    AT__ROTATE_LEFT,
-    AT__ROTATE_IN_PLACE_RIGHT,
-    AT__ROTATE_IN_PLACE_LEFT
+    CT__NONE,
+    CT__STOP,
+    CT__GO_FORWARD,
+    CT__GO_BACKWARD,
+    CT__ROTATE_RIGHT,
+    CT__ROTATE_LEFT,
+    CT__ROTATE_IN_PLACE_RIGHT,
+    CT__ROTATE_IN_PLACE_LEFT
 };
 
-struct ActionEntry
+struct CommandEntry
 {
-    ActionType actionType;
+    CommandType command;
 
     union
     {
@@ -25,29 +25,77 @@ struct ActionEntry
         float param_float;
     };
 
-    ActionEntry()                          { actionType = AT__NONE; param_int   = 0;     }
-    ActionEntry(ActionType a)              { actionType = a;        param_int   = 0;     }
-    ActionEntry(ActionType a, int   param) { actionType = a;        param_int   = param; }
-    ActionEntry(ActionType a, float param) { actionType = a;        param_float = param; }
+    CommandEntry() { Reset(); }
 
-    void Reset()                           { actionType = AT__NONE; param_int   = 0;     }
+    void Reset() { command = CT__NONE; param_int = 0; }
 };
 
-class ActionQueue
+class CommandQueue
 {
 public:
-    ActionQueue();
-    ~ActionQueue();
+    CommandQueue();
+    ~CommandQueue();
 
     void Reset();
 
-    bool Push(ActionType a, int   param) { ActionEntry e(a, param); return Push(e); }
-    bool Push(ActionType a, float param) { ActionEntry e(a, param); return Push(e); }
-    bool Push(ActionEntry & entry);
-    bool Pop(ActionEntry & entry);
+    bool Push(CommandType c, int   param) { CommandEntry e; e.command = c; e.param_int   = param; return Push(e); }
+    bool Push(CommandType c, float param) { CommandEntry e; e.command = c; e.param_float = param; return Push(e); }
+    bool Push(CommandType c)              { CommandEntry e; e.command = c; e.param_int   = 0;     return Push(e); }
+    bool Push(CommandEntry & entry);
+    bool Pop(CommandEntry & entry);
 
 private:
-    ActionEntry eventQueue[EVENT_QUEUE_SIZE];
+    CommandEntry commandQueue[EVENT_QUEUE_SIZE];
+    int pushPlace;
+    int popPlace;
+};
+
+//-------------------------------------------------------------------------------------
+
+enum EventType
+{
+    ET__NONE,
+    ET__GO_TO,
+    ET__STOP
+};
+
+struct EventEntry
+{
+    EventType eventType;
+
+    union
+    {
+        int   param_int0;
+        float param_float0;
+    };
+
+    union
+    {
+        int   param_int1;
+        float param_float1;
+    };
+
+    EventEntry() { Reset(); }
+
+    void Reset() { eventType = ET__NONE; param_int0 = 0; param_int1 = 0; }
+};
+
+class EventQueue
+{
+public:
+    EventQueue();
+    ~EventQueue();
+
+    void Reset();
+
+    bool Push(EventType a, int   param0, int   param1) { EventEntry e; e.eventType = a; e.param_int0 = param0; e.param_int1 = param1; return Push(e); }
+    bool Push(EventType a, float param0, float param1) { EventEntry e; e.eventType = a; e.param_int0 = param0; e.param_int1 = param1; return Push(e); }
+    bool Push(EventType a)                             { EventEntry e; e.eventType = a; e.param_int0 = 0;      e.param_int1 = 0;      return Push(e); }
+    bool Push(EventEntry & entry);
+    bool Pop(EventEntry & entry);
+
+private:
+    EventEntry eventQueue[EVENT_QUEUE_SIZE];
     int pushPlace;
     int popPlace;
 };
