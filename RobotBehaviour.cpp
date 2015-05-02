@@ -30,6 +30,12 @@ RobotBehaviour::~RobotBehaviour()
 //    WheelsLocation robotWeelsLocation;
 void Cerebellum::UpdateRobotBehaviour()
 {
+    //Test1();
+    Test2();
+}
+
+void Cerebellum::Test1()
+{
     if (motors.IsHandlingEvent())
     {
         delay(2);
@@ -139,39 +145,39 @@ void RobotBehaviour::LookStraight()
 
 
 
-//void Cerebellum::UpdateRobotBehaviour()
-//{
-//    BumpersData bumpersData = sensors.GetBumpersData();
-//
-//    bool isHitSonthing = bumpersData.FLLBumper ||
-//                         bumpersData.FLBumper  ||
-//                         bumpersData.FCBumper  ||
-//                         bumpersData.FRBumper  ||
-//                         bumpersData.FRRBumper ||
-//                         bumpersData.RRBumper  ||
-//                         bumpersData.RLBumper;
-//
-//    if (isHitSonthing)
-//    {
-//        motors.StopAllMotors();
-//        return;
-//    }
-//
-//    FrontSensorsData sensorsData = sensors.GetFrontSensorsData();
-//
-//    bool isCloseToSomething = sensorsData.LSensorDist < 10.0 ||
-//                              sensorsData.CSensorDist < 10.0 ||
-//                              sensorsData.RSensorDist < 10.0;
-//    if (isCloseToSomething)
-//    {
-//        MotorsSpeed motorsSpeed;
-//        motorsSpeed.LMotorSpeed = motorsSpeed.RMotorSpeed = 0;
-//        motors.SetMotorsSpeed(motorsSpeed);
-//    }
-//    else
-//    {
-//        MotorsSpeed motorsSpeed;
-//        motorsSpeed.LMotorSpeed = motorsSpeed.RMotorSpeed = 70;
-//        motors.SetMotorsSpeed(motorsSpeed);
-//    }
-//}
+void Cerebellum::Test2()
+{
+    BumpersData bumpersData = sensors.GetBumpersData();
+
+    bool isHitSonthing = bumpersData.FLLBumper ||
+                         bumpersData.FLBumper  ||
+                         bumpersData.FCBumper  ||
+                         bumpersData.FRBumper  ||
+                         bumpersData.FRRBumper ||
+                         bumpersData.RRBumper  ||
+                         bumpersData.RLBumper;
+
+    if (isHitSonthing)
+    {
+        motors.StopAllMotors();
+        return;
+    }
+
+    FrontSensorsData sensorsData = sensors.GetFrontSensorsData();
+
+    bool isCloseToSomething = sensorsData.LSensorDist < 10.0 ||
+                              sensorsData.CSensorDist < 10.0 ||
+                              sensorsData.RSensorDist < 10.0;
+    if (0)//isCloseToSomething)
+    {
+        motors.StopAllMotors();
+        return;
+    }
+
+    //MotorsSpeed motorsSpeed;
+    //motorsSpeed.LMotorSpeed = motorsSpeed.RMotorSpeed = 70;
+    //motors.SetMotorsSpeed(motorsSpeed);
+
+    if (!motors.IsHandlingEvent())
+        motors.DriveStraight(70);
+}

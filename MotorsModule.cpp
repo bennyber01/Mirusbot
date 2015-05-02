@@ -5,6 +5,8 @@ MotorsModule::MotorsModule()
     ticks.LMotorTick = 0;
     ticks.RMotorTick = 0;
     isHandlingEvent = false;
+    isUsePID = false;
+    ResetPIDVars();
 }
 
 MotorsModule::~MotorsModule()
@@ -15,10 +17,15 @@ MotorsModule::~MotorsModule()
 void MotorsModule::Reset()
 {
     mmx.reset();                // resets the encoder positions to zero
+    delay(5);
     mmx.setSpeed(MOTOR_L, 0);
+    delay(5);
     mmx.setSpeed(MOTOR_R, 0);
+    delay(5);
     mmx.resetEncoder(MOTOR_L);
+    delay(5);
     mmx.resetEncoder(MOTOR_R);
+    delay(5);
     ticks.LMotorTick = 0;
     ticks.RMotorTick = 0;
 }
@@ -30,7 +37,22 @@ void MotorsModule::Init()
 
 void MotorsModule::Update()
 {
+    if (isUsePID)
+    {
+        if (pid_currentMotorsSpeed.LMotorSpeed < pid_wantedMotorsSpeed.LMotorSpeed)
+        {
+            UCHAR update = min(10, (pid_wantedMotorsSpeed.LMotorSpeed - pid_currentMotorsSpeed.LMotorSpeed));
+            pid_currentMotorsSpeed.LMotorSpeed += update;
+        }
 
+        if (pid_currentMotorsSpeed.RMotorSpeed < pid_wantedMotorsSpeed.RMotorSpeed)
+        {
+            UCHAR update = min(10, (pid_wantedMotorsSpeed.RMotorSpeed - pid_currentMotorsSpeed.RMotorSpeed));
+            pid_currentMotorsSpeed.RMotorSpeed += update;
+        }
+
+        UpdateMotorsSpeed();
+    }
 }
 
 //    mmx.runRotations(MMX_Motor_1,
@@ -61,17 +83,21 @@ void MotorsModule::Update()
 // Motors seepd can be any value between 0 and 100.
 void MotorsModule::SetMotorsSpeed(const MotorsSpeed & newSpeeds)
 {
-    //mmx.setSpeed(uint8_t which_motor, int speed);
+    int newLSpeed = constrain(newSpeeds.LMotorSpeed, -100, 100);
+    int newRSpeed = constrain(newSpeeds.RMotorSpeed, -100, 100);
+
+//    mmx.setSpeed(MOTOR_L, newLSpeed);           // this method doesn't move the robot. It only sets it's speed value.
+//    mmx.setSpeed(MOTOR_R, newRSpeed);           // this method doesn't move the robot. It only sets it's speed value.
 
     if (newSpeeds.LMotorSpeed < 0)
-        mmx.runUnlimited(MOTOR_L, MMX_Direction_Reverse,-newSpeeds.LMotorSpeed);
+        mmx.runUnlimited(MOTOR_L, MMX_Direction_Reverse,-newLSpeed);
     else
-        mmx.runUnlimited(MOTOR_L, MMX_Direction_Forward, newSpeeds.LMotorSpeed);
+        mmx.runUnlimited(MOTOR_L, MMX_Direction_Forward, newLSpeed);
 
     if (newSpeeds.RMotorSpeed < 0)
-        mmx.runUnlimited(MOTOR_R, MMX_Direction_Reverse,-newSpeeds.RMotorSpeed);
+        mmx.runUnlimited(MOTOR_R, MMX_Direction_Reverse,-newRSpeed);
     else
-        mmx.runUnlimited(MOTOR_R, MMX_Direction_Forward, newSpeeds.RMotorSpeed);
+        mmx.runUnlimited(MOTOR_R, MMX_Direction_Forward, newRSpeed);
 }
 
 void MotorsModule::StopAllMotors()
@@ -80,12 +106,9 @@ void MotorsModule::StopAllMotors()
 
     mmx.stop(MMX_Motor_Both, MMX_Next_Action_BrakeHold);
 
-//    mmx.runDegrees(MMX_Motor_Both,
-//                   MMX_Direction_Forward,
-//                   0,
-//                   0,
-//                   MMX_Completion_Wait_For,
-//                   MMX_Next_Action_BrakeHold);
+    pid_wantedMotorsSpeed.LMotorSpeed  = pid_wantedMotorsSpeed.RMotorSpeed  = 0;
+    pid_currentMotorsSpeed.LMotorSpeed = pid_currentMotorsSpeed.RMotorSpeed = 0;
+    isHandlingEvent = false;
 }
 
 void MotorsModule::GetMotorsSpeed(MotorsSpeed & motorsSpeed)
@@ -102,7 +125,7 @@ void MotorsModule::GetMotorsTicks(MotorsTicks & motorsTicks)
     motorsTicks.LMotorTick = lt - ticks.LMotorTick;
     motorsTicks.RMotorTick = rt - ticks.RMotorTick;
 
-    if (IsTachoDone())
+    if (!isUsePID && IsTachoDone())
     {
         mmx.resetEncoder(MOTOR_L);
         delay(5);
@@ -228,4 +251,27 @@ void MotorsModule::RotateInPlace_deg(int deg, bool rotateRight)
 bool MotorsModule::IsHandlingEvent()
 {
     return isHandlingEvent;
+}
+
+void MotorsModule::DriveStraight(UCHAR speed)
+{
+    isHandlingEvent = true;
+
+    mmx.resetEncoder(MOTOR_L);
+    delay(5);
+    mmx.resetEncoder(MOTOR_R);
+    delay(5);
+    ticks.LMotorTick = 0;
+    ticks.RMotorTick = 0;
+
+    ResetPIDVars();
+
+    mmx.startMotorsInSync();
+
+    pid_wantedMotorsSpeed.LMotorSpeed = pid_wantedMotorsSpeed.RMotorSpeed = speed;
+
+    pid_currentMotorsSpeed.LMotorSpeed = pid_currentMotorsSpeed.RMotorSpeed = min(5, speed);
+    SetMotorsSpeed(pid_currentMotorsSpeed);
+
+    isUsePID = true;
 }

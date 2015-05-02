@@ -24,6 +24,8 @@ private:
     SensorsModule sensors;
 
     void UpdateRobotBehaviour();
+    void Test1();
+    void Test2();
 
     void HandleCommand(const CommandEntry & entry);
 };
