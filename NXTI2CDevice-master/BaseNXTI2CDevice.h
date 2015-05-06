@@ -37,7 +37,12 @@ inline uint16_t readIntFromBuffer(uint8_t* buf)
 
 inline uint32_t readLongFromBuffer(uint8_t* buf)
 {
-	return buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+	//return buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+	uint32_t buf0 = buf[0];
+	uint32_t buf1 = buf[1];
+	uint32_t buf2 = buf[2];
+	uint32_t buf3 = buf[3];
+	return buf0 | (buf1 << 8) | (buf2 << 16) | (buf3 << 24);
 }
 
 inline void writeByteToBuffer(uint8_t* buf, uint8_t data)
