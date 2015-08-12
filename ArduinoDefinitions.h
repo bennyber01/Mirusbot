@@ -12,15 +12,16 @@
 
 // sensors pins
 #define FRONT_LEFT_DISTANCE_SENSOR_PIN      A0      // GP2Y0A21YK0F
-#define FRONT_CENTER_DISTANCE_SENSOR_PIN    A1      // GP2D12
+#define FRONT_CENTER_DISTANCE_SENSOR_PIN    A1      // GP2Y0A21YK0F
 #define FRONT_RIGHT_DISTANCE_SENSOR_PIN     A2      // GP2Y0A21YK0F
 #define FRONT_LL_BUMPER_PIN                 3
 #define FRONT_L_BUMPER_PIN                  7
 #define FRONT_C_BUMPER_PIN                  6
 #define FRONT_R_BUMPER_PIN                  5
-#define FRONT_RR_BUMPER_PIN                 2
+#define FRONT_RR_BUMPER_PIN                 4
 #define REAR_L_BUMPER_PIN                   12
 #define REAR_R_BUMPER_PIN                   13
+#define MPU6050_GYROSCOPE_INTERUPT_PIN      2       // interupt num 0
 
 // display pins
 #define DISPLAY_SCREEN_0_PIN                11

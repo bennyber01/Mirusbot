@@ -107,9 +107,9 @@ void SensorsModule::UpdateFrontCenterDistanceSensorValue()
     unsigned long time_millisec = millis();
     if (lastUpdateTime_SensorC < time_millisec - UPDATE_TIME_DELTA_FOR_IR_DIASTANCE_SENSORS)
     {
-        int val = analogRead(FRONT_CENTER_DISTANCE_SENSOR_PIN);    // read the input pin     - 4
+        int val = analogRead(FRONT_CENTER_DISTANCE_SENSOR_PIN);    // read the input pin
         int filteredVal = frontCenterDistanceSensorFilter.Filter(val);
-        frontSensorsData.CSensorDist = ConvertAnalogValueToCM_SharpSensor_GP2D12(filteredVal);
+        frontSensorsData.CSensorDist = ConvertAnalogValueToCM_SharpSensor_GP2Y0A21(filteredVal);
         lastUpdateTime_SensorC = time_millisec;
     }
 }
@@ -119,7 +119,7 @@ void SensorsModule::UpdateFrontRightDistanceSensorValue()
     unsigned long time_millisec = millis();
     if (lastUpdateTime_SensorR < time_millisec - UPDATE_TIME_DELTA_FOR_IR_DIASTANCE_SENSORS)
     {
-        int val = analogRead(FRONT_RIGHT_DISTANCE_SENSOR_PIN);    // read the input pin     - 15
+        int val = analogRead(FRONT_RIGHT_DISTANCE_SENSOR_PIN);    // read the input pin
         int filteredVal = frontRightDistanceSensorFilter.Filter(val);
         frontSensorsData.RSensorDist = ConvertAnalogValueToCM_SharpSensor_GP2Y0A21(filteredVal);
         lastUpdateTime_SensorR = time_millisec;

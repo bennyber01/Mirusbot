@@ -30,8 +30,8 @@ RobotBehaviour::~RobotBehaviour()
 //    WheelsLocation robotWeelsLocation;
 void Cerebellum::UpdateRobotBehaviour()
 {
-    //Test1();
-    Test2();
+    Test1();
+    //Test2();
 }
 
 void Cerebellum::Test1()
@@ -168,7 +168,7 @@ void Cerebellum::Test2()
     bool isCloseToSomething = sensorsData.LSensorDist < 10.0 ||
                               sensorsData.CSensorDist < 10.0 ||
                               sensorsData.RSensorDist < 10.0;
-    if (0)//isCloseToSomething)
+    if (isCloseToSomething)
     {
         motors.StopAllMotors();
         return;
