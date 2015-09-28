@@ -1,7 +1,7 @@
 #ifndef COMMUNICATION_DEFINITIONS_H
 #define COMMUNICATION_DEFINITIONS_H
 
-#ifdef __AVR_ATmega328P__
+#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
 #include "ArduinoDefinitions.h"
 #endif
 
