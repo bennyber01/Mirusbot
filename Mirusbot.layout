@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="Arduino Duemilanove (328)" />
+	<ActiveTarget name="Arduino Mega 2560/ADK" />
 </CodeBlocks_layout_file>
