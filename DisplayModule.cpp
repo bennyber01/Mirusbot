@@ -1,69 +1,6 @@
-#include <DisplayModule.h>
-
-#define SCREEN_0       0
-#define SCREEN_1       1
-#define SCREEN_2       2
-#define SCREEN_3       3
-
-#define BUMPER_TOP_ON  4
-#define BUMPER_TOP_OFF 5
-#define BUMPER_MID_ON  6
-#define BUMPER_MID_OFF 7
-
-uint8_t scr_0[8] = {B11111,B11111,B11111,B11011,B11111,B11111,B11111};
-uint8_t scr_1[8] = {B11111,B11111,B11011,B11111,B11011,B11111,B11111};
-uint8_t scr_2[8] = {B11111,B11111,B11011,B11111,B10101,B11111,B11111};
-uint8_t scr_3[8] = {B11111,B11111,B10101,B11111,B10101,B11111,B11111};
-//uint8_t scr_4[8] = {B11111,B10101,B11111,B11011,B11111,B10101,B11111};
-//uint8_t scr_5[8] = {B11111,B10101,B11111,B10101,B11111,B10101,B11111};
-
-uint8_t bumper_Top1[8] = {B11111,
-                          B11111,
-                          B11111,
-                          B00000,
-                          B00000,
-                          B00000,
-                          B00000};
-
-uint8_t bumper_Top0[8] = {B00000,
-                          B11111,
-                          B00000,
-                          B00000,
-                          B00000,
-                          B00000,
-                          B00000};
-
-uint8_t bumper_Mid1[8] = {B00000,
-                          B00000,
-                          B11111,
-                          B11111,
-                          B11111,
-                          B00000,
-                          B00000};
-
-uint8_t bumper_Mid0[8] = {B00000,
-                          B00000,
-                          B00000,
-                          B11111,
-                          B00000,
-                          B00000,
-                          B00000};
-
-uint8_t bumper_Bot1[8] = {B00000,
-                          B00000,
-                          B00000,
-                          B00000,
-                          B11111,
-                          B11111,
-                          B11111};
-
-uint8_t bumper_Bot0[8] = {B00000,
-                          B00000,
-                          B00000,
-                          B00000,
-                          B00000,
-                          B11111,
-                          B00000};
+#include "DisplayModule.h"
+#include "NextionGlobalCallbacks.h"
+#include "cerebellum.h"
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #define printByte(args)  write(args);
@@ -71,42 +8,48 @@ uint8_t bumper_Bot0[8] = {B00000,
 #define printByte(args)  print(args,BYTE);
 #endif
 
-DisplayModule::DisplayModule() : lcd(0x27,20,4)  // set the LCD address to 0x27 for a 20 chars and 4 line display
+extern bool sendNextionCommand(const char * format, ...);
+
+const char * mainMenu[] =
 {
-    lastScreenChangeTime = 0;
+    "Sensors",
+    "Motors",
+    "Camera",
+    "Location",
+    "Wandering",
+    "About"
+};
+
+const int MAIN_MENU_SIZE = sizeof(mainMenu) / sizeof(mainMenu[0]);
+
+//-------------------------------------------------------------------
+
+const char * sensorsMenu[] =
+{
+    "Distance",
+    "Bumpers",
+    "Rotation"
+};
+
+const int SENSORS_MENU_SIZE = sizeof(sensorsMenu) / sizeof(sensorsMenu[0]);
+
+DisplayModule::DisplayModule(Cerebellum * c) : cerebellum(c), menuVisualizer(this)
+{
     lastScreenUpdateTime = 0;
+    isCurrScreenNeedUpdate = false;
 
-    voltage = 0;
+    currMenu = ABOUT_DLG;
 
-    memset(isUpdateScr, 0, sizeof(isUpdateScr));
+    lastMainMenuScreen = -1;
+    lastSensorsMenuScreen = -1;
 
-    screenNum = -1;
-    newScreenNum = 0;
+    azimMove = elevMove = 0;
+    lastCameraAnglesUpdate = 0;
 }
 
 DisplayModule::~DisplayModule()
 {
 
-}
-
-void DisplayModule::Init()
-{
-    lcd.init();                                     // initialize the lcd
-    lcd.backlight();
-
-    lcd.createChar(SCREEN_0       , scr_0);
-    lcd.createChar(SCREEN_1       , scr_1);
-    lcd.createChar(SCREEN_2       , scr_2);
-    lcd.createChar(SCREEN_3       , scr_3);
-    lcd.createChar(BUMPER_TOP_ON  , bumper_Top1);
-    lcd.createChar(BUMPER_TOP_OFF , bumper_Top0);
-    lcd.createChar(BUMPER_MID_ON  , bumper_Mid1);
-    lcd.createChar(BUMPER_MID_OFF , bumper_Mid0);
-
-    pinMode(DISPLAY_SCREEN_0_PIN, INPUT); // set pin to input
-    pinMode(DISPLAY_SCREEN_1_PIN, INPUT); // set pin to input
-    pinMode(DISPLAY_SCREEN_2_PIN, INPUT); // set pin to input
-    pinMode(DISPLAY_SCREEN_3_PIN, INPUT); // set pin to input
 }
 
 void DisplayModule::Print(const MotorsTicks & ticks)
@@ -115,7 +58,9 @@ void DisplayModule::Print(const MotorsTicks & ticks)
                     motorsTicks.RMotorTick != ticks.RMotorTick;
 
     motorsTicks = ticks;
-    isUpdateScr[0] |= isUpdate;
+
+    if (currMenu == MOTORS_DLG)
+        isCurrScreenNeedUpdate |= isUpdate;
 }
 
 void DisplayModule::Print(const MotorsSpeed & speeds)
@@ -124,7 +69,9 @@ void DisplayModule::Print(const MotorsSpeed & speeds)
                     motorsSpeed.RMotorSpeed != speeds.RMotorSpeed;
 
     motorsSpeed = speeds;
-    isUpdateScr[0] |= isUpdate;
+
+    if (currMenu == MOTORS_DLG)
+        isCurrScreenNeedUpdate |= isUpdate;
 }
 
 void DisplayModule::Print(const FrontSensorsData & data)
@@ -134,7 +81,9 @@ void DisplayModule::Print(const FrontSensorsData & data)
                     frontSensorsData.RSensorDist != data.RSensorDist;
 
     frontSensorsData = data;
-    isUpdateScr[1] |= isUpdate;
+
+    if (currMenu == SENSORS_DISTANCE_DLG)
+        isCurrScreenNeedUpdate |= isUpdate;
 }
 
 void DisplayModule::Print(const WheelsLocation & loc)
@@ -145,7 +94,9 @@ void DisplayModule::Print(const WheelsLocation & loc)
                     wheelsLocation.rightWheelLoc.y != loc.rightWheelLoc.y;
 
     wheelsLocation = loc;
-    isUpdateScr[2] |= isUpdate;
+
+    if (currMenu == LOCATION_DLG)
+        isCurrScreenNeedUpdate |= isUpdate;
 }
 
 void DisplayModule::Print(const BumpersData & data)
@@ -159,158 +110,227 @@ void DisplayModule::Print(const BumpersData & data)
                     bumpersData.RRBumper  != data.RRBumper;
 
     bumpersData = data;
-    isUpdateScr[3] |= isUpdate;
+
+    if (currMenu == SENSORS_BUMPERS_DLG)
+        isCurrScreenNeedUpdate |= isUpdate;
 }
 
-void DisplayModule::Print(int voltage)
+void DisplayModule::Print(int azim)
 {
-    bool isUpdate = this -> voltage != voltage;
-    this -> voltage = voltage;
-    isUpdateScr[3] |= isUpdate;
+    bool isUpdate = this -> azim != azim;
+    this -> azim = azim;
+
+    if (currMenu == SENSORS_ROTATION_DLG)
+        isCurrScreenNeedUpdate |= isUpdate;
+}
+
+void DisplayModule::Init()
+{
+    dbSerialBegin(9600);
+    dbSerialPrintln("setup begin");
+
+    nexInit();
+
+    SetCallbacksToNextionVars();
+
+    menuVisualizer.Init();
+
+    dbSerialPrintln("setup end");
+
+    ShowAboutDialog();
+}
+
+void DisplayModule::SetCallbacksToNextionVars()
+{
+    // about dialog
+    page0.attachPop(goBackCallback, this);
+    t0_0.attachPop(goBackCallback, this);
+
+    // text dialog
+    t2_0.attachPop(goBackCallback, this);
+    q2_0.attachPop(goBackCallback, this);
+
+    // camera dialog
+    t3_0.attachPop(goBackCallback, this);
+    q3_0.attachPop(goBackCallback, this);
+
+    // go back
+    q1_5.attachPop(goBackCallback, this);
+    t1_0.attachPop(goBackCallback, this);
+
+    // menu 1
+    q1_0.attachPop(menu1Callback, &menuVisualizer);
+    t1_1.attachPop(menu1Callback, &menuVisualizer);
+
+    // menu 2
+    q1_1.attachPop(menu2Callback, &menuVisualizer);
+    t1_2.attachPop(menu2Callback, &menuVisualizer);
+
+    // menu 3
+    q1_2.attachPop(menu3Callback, &menuVisualizer);
+    t1_3.attachPop(menu3Callback, &menuVisualizer);
+
+    // Up/Down menus
+    q1_3.attachPop(showNextMenuCallback, &menuVisualizer);
+    q1_4.attachPop(showPrevMenuCallback, &menuVisualizer);
+
+    ////////////////////////////////////////
+
+    m3_0.attachPush(cameraLeftArrowPressedCallback, this);
+    m3_0.attachPop(cameraLeftArrowReleasedCallback, this);
+    m3_1.attachPush(cameraUpArrowPressedCallback, this);
+    m3_1.attachPop(cameraUpArrowReleasedCallback, this);
+    m3_2.attachPop(cameraCenterCallback, this);
+    m3_3.attachPush(cameraDownArrowPressedCallback, this);
+    m3_3.attachPop(cameraDownArrowReleasedCallback, this);
+    m3_4.attachPush(cameraRightArrowPressedCallback, this);
+    m3_4.attachPop(cameraRightArrowReleasedCallback, this);
+
+    t4_0.attachPop(goBackCallback, this);
+    q4_0.attachPop(goBackCallback, this);
+    p4_0.attachPop(toggleWanderingCallback, this);
+
+    t5_0.attachPop(goBackCallback, this);
+    q5_0.attachPop(goBackCallback, this);
+    m5_0.attachPop(resetGaugeCallback, this);
 }
 
 void DisplayModule::Update()
 {
+    nexLoop(nex_listen_list);
+
+    UpdateCamLocation();
+}
+
+void DisplayModule::ShowMainMenu()
+{
+    menuVisualizer.SetMenuTitles(mainMenu, MAIN_MENU_SIZE, "Menu");
+    menuVisualizer.Show(lastMainMenuScreen);
+    currMenu = MAIN_MENU;
+}
+
+void DisplayModule::ShowSensorsMenu()
+{
+    menuVisualizer.SetMenuTitles(sensorsMenu, SENSORS_MENU_SIZE, "Sensors");
+    menuVisualizer.Show(lastSensorsMenuScreen);
+    currMenu = SENSORS_MENU;
+}
+
+void DisplayModule::GoBack()
+{
+    switch (currMenu)
+    {
+    case MAIN_MENU:
+        ShowAboutDialog();
+        break;
+    case SENSORS_MENU:
+        ShowMainMenu();
+        break;
+    //---------------------------------
+    case SENSORS_DISTANCE_DLG:
+        ShowSensorsMenu();
+        break;
+    case SENSORS_BUMPERS_DLG:
+        ShowSensorsMenu();
+        break;
+    case SENSORS_ROTATION_DLG:
+        ShowSensorsMenu();
+        break;
+    case MOTORS_DLG:
+        ShowMainMenu();
+        break;
+    case CAMERA_DLG:
+        ShowMainMenu();
+        break;
+    case LOCATION_DLG:
+        ShowMainMenu();
+        break;
+    case WANDERING_DLG:
+        ShowMainMenu();
+        break;
+    case ABOUT_DLG:
+        ShowMainMenu();
+        break;
+    }
+}
+
+void DisplayModule::SetSelectedMenu(int i)
+{
+    int currScreen = menuVisualizer.GetLastScreenNum();
+
+    switch (currMenu)
+    {
+    case MAIN_MENU:
+        SetSelectedMainMenu(i, currScreen);
+        break;
+    case SENSORS_MENU:
+        SetSelectedSensorsMenu(i, currScreen);
+        break;
+    }
+}
+
+void DisplayModule::SetSelectedMainMenu(int i, int currScreen)
+{
+    lastMainMenuScreen = currScreen;
+
+    switch (i)
+    {
+    case 0:
+        ShowSensorsMenu();
+        break;
+    case 1:
+        ShowMotorsDialog();
+        break;
+    case 2:
+        ShowCameraArrowsDialog();
+        break;
+    case 3:
+        ShowLocationDialog();
+        break;
+    case 4:
+        ShowWanderingDialog();
+        break;
+    case 5:
+        ShowAboutDialog();
+        break;
+    }
+}
+
+void DisplayModule::SetSelectedSensorsMenu(int i, int currScreen)
+{
+    lastSensorsMenuScreen = currScreen;
+
+    switch (i)
+    {
+    case 0:
+        ShowSensorsDistanceDialog();
+        break;
+    case 1:
+        ShowSensorsBumpersDialog();
+        break;
+    case 2:
+        ShowSensorsRotationDialog();
+        break;
+    }
+}
+
+void DisplayModule::UpdateCamLocation()
+{
     unsigned long time = millis();
-    if (lastScreenChangeTime < time - 400)
+
+    if (lastCameraAnglesUpdate + 50 < time)
     {
-        if (screenNum != 0 && digitalRead(DISPLAY_SCREEN_0_PIN) == HIGH)
-            newScreenNum = 0;
-        else if (screenNum != 1 && digitalRead(DISPLAY_SCREEN_1_PIN) == HIGH)
-            newScreenNum = 1;
-        else if (screenNum != 2 && digitalRead(DISPLAY_SCREEN_2_PIN) == HIGH)
-            newScreenNum = 2;
-        else if (screenNum != 3 && digitalRead(DISPLAY_SCREEN_3_PIN) == HIGH)
-            newScreenNum = 3;
+        if (azimMove)
+            cerebellum -> GetCameraModule().SetAzim(cerebellum -> GetCameraModule().GetAzim() + azimMove);
 
-        if (screenNum != newScreenNum)
-            lastScreenChangeTime = time;
-    }
+        if (elevMove)
+            cerebellum -> GetCameraModule().SetElev(cerebellum -> GetCameraModule().GetElev() + elevMove);
 
-    if (lastScreenUpdateTime < time - 400)
-    {
-        if (screenNum != newScreenNum || isUpdateScr[screenNum])
-        {
-            screenNum = newScreenNum;
-            lcd.clear();
-            switch (screenNum)
-            {
-                case 0:     ShowScreen0();      break;
-                case 1:     ShowScreen1();      break;
-                case 2:     ShowScreen2();      break;
-                case 3:     ShowScreen3();      break;
-            }
-            lcd.setCursor(19, 0);
-            lcd.printByte(screenNum);
-
-            isUpdateScr[screenNum] = false;
-
-            lastScreenUpdateTime = time;
-        }
+        lastCameraAnglesUpdate = time;
     }
 }
 
-void DisplayModule::ShowScreen0()
+void DisplayModule::CenterCam()
 {
-    lcd.setCursor(0, 0);
-    lcd.print("LMotor Ticks: ");
-    lcd.print(motorsTicks.LMotorTick);
-
-    lcd.setCursor(0, 1);
-    lcd.print("RMotor Ticks: ");
-    lcd.print(motorsTicks.RMotorTick);
-
-    lcd.setCursor(0, 2);
-    lcd.print("LMotor Speed: ");
-    lcd.print(motorsSpeed.LMotorSpeed);
-
-    lcd.setCursor(0, 3);
-    lcd.print("RMotor Speed: ");
-    lcd.print(motorsSpeed.RMotorSpeed);
-}
-
-void DisplayModule::ShowScreen1()
-{
-    lcd.setCursor(0, 1);
-    lcd.print("LSensor Dist:");
-    lcd.print(frontSensorsData.LSensorDist, 1);
-    lcd.print("cm");
-
-    lcd.setCursor(0, 2);
-    lcd.print("CSensor Dist:");
-    lcd.print(frontSensorsData.CSensorDist, 1);
-    lcd.print("cm");
-
-    lcd.setCursor(0, 3);
-    lcd.print("RSensor Dist:");
-    lcd.print(frontSensorsData.RSensorDist, 1);
-    lcd.print("cm");
-}
-
-void DisplayModule::ShowScreen2()
-{
-    lcd.setCursor(0, 0);
-    lcd.print("Wheels Location:");
-
-    lcd.setCursor(0, 1);
-    lcd.print("L: (");
-    lcd.print(wheelsLocation.leftWheelLoc.x);
-    lcd.print(",");
-    lcd.print(wheelsLocation.leftWheelLoc.y);
-    lcd.print(")");
-
-    lcd.setCursor(0, 2);
-    lcd.print("R: (");
-    lcd.print(wheelsLocation.rightWheelLoc.x);
-    lcd.print(",");
-    lcd.print(wheelsLocation.rightWheelLoc.y);
-    lcd.print(")");
-
-    Vector2D pos = (wheelsLocation.leftWheelLoc + wheelsLocation.rightWheelLoc) * 0.5;
-
-    lcd.setCursor(0, 3);
-    lcd.print("Pos: (");
-    lcd.print(pos.x);
-    lcd.print(",");
-    lcd.print(pos.y);
-    lcd.print(")");
-}
-
-void DisplayModule::ShowScreen3()
-{
-    lcd.setCursor(0, 0);
-    lcd.print("Voltage: ");
-    lcd.print(voltage);
-
-    lcd.setCursor(7, 1);
-    if (bumpersData.FLLBumper) { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }
-    if (bumpersData.FLBumper)  { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }
-    if (bumpersData.FCBumper)  { lcd.printByte(BUMPER_TOP_ON); } else { lcd.printByte(BUMPER_TOP_OFF); }
-    if (bumpersData.FRBumper)  { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }
-    if (bumpersData.FRRBumper) { lcd.printByte(BUMPER_MID_ON); } else { lcd.printByte(BUMPER_MID_OFF); }
-
-    lcd.setCursor(7, 2);
-    if (bumpersData.RLBumper)
-    {
-        lcd.printByte(BUMPER_MID_ON);
-        lcd.printByte(BUMPER_MID_ON);
-    }
-    else
-    {
-        lcd.printByte(BUMPER_MID_OFF);
-        lcd.printByte(BUMPER_MID_OFF);
-    }
-
-    lcd.print(" ");
-
-    if (bumpersData.RRBumper)
-    {
-        lcd.printByte(BUMPER_MID_ON);
-        lcd.printByte(BUMPER_MID_ON);
-    }
-    else
-    {
-        lcd.printByte(BUMPER_MID_OFF);
-        lcd.printByte(BUMPER_MID_OFF);
-    }
+    cerebellum -> GetCameraModule().ResetAngles();
 }

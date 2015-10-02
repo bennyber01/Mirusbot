@@ -1,7 +1,7 @@
 #include "cerebellum.h"
 #include "robot_location_computation.h"
 
-Cerebellum::Cerebellum()
+Cerebellum::Cerebellum() : disp(this)
 {
 
 }
@@ -16,6 +16,7 @@ void Cerebellum::Init()
     disp.Init();
     motors.Init();
     sensors.Init();
+    cameraModule.Init();
     //Serial.begin(115200);
 }
 
@@ -24,6 +25,7 @@ void Cerebellum::Update()
     // update data from peripherals
     motors.Update();
     sensors.Update();
+    cameraModule.Update();
 
     MotorsTicks motorsTicks;
     motors.GetMotorsTicks(motorsTicks);
@@ -49,7 +51,8 @@ void Cerebellum::Update()
     disp.Print(robotWeelsLocation);
     disp.Print(motors.GetBatteryVoltage());
 
-    UpdateRobotBehaviour();
+    if (isWander)
+        UpdateRobotBehaviour();
 
     // refresh screen
     disp.Update();
@@ -58,4 +61,9 @@ void Cerebellum::Update()
     // for the analog-to-digital converter to settle
     // after the last reading:
     delay(2);
+}
+
+void Cerebellum::ToggleWander()
+{
+    isWander = !isWander;
 }

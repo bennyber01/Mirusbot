@@ -18,16 +18,24 @@ public:
     void Init();
     void Update();
 
+    void ToggleWander();
+    bool IsWander() { return isWander; }
+
+    CameraModule & GetCameraModule() { return cameraModule; }
+
 private:
     DisplayModule disp;
     MotorsModule motors;
     SensorsModule sensors;
+    CameraModule cameraModule;
 
     void UpdateRobotBehaviour();
     void Test1();
     void Test2();
 
     void HandleCommand(const CommandEntry & entry);
+
+    bool isWander;
 };
 
 #endif

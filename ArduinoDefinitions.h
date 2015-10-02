@@ -3,31 +3,28 @@
 
 #include <Arduino.h>
 
-// PWM pins: 3, 5, 6, 9, 10, 11
+// PWM pins: 2 to 13 and 44 to 46.
 
-// I2C_SDA  A4
-// I2C_SCL  A5
-
-// Interrupt Pins: 2, 3
+// Interrupt Pins: 2, 3, 18, 19, 20, 21
 
 // sensors pins
 #define FRONT_LEFT_DISTANCE_SENSOR_PIN      A0      // GP2Y0A21YK0F
 #define FRONT_CENTER_DISTANCE_SENSOR_PIN    A1      // GP2Y0A21YK0F
 #define FRONT_RIGHT_DISTANCE_SENSOR_PIN     A2      // GP2Y0A21YK0F
-#define FRONT_LL_BUMPER_PIN                 3
-#define FRONT_L_BUMPER_PIN                  7
-#define FRONT_C_BUMPER_PIN                  6
-#define FRONT_R_BUMPER_PIN                  5
-#define FRONT_RR_BUMPER_PIN                 4
+#define FRONT_LL_BUMPER_PIN                 30
+#define FRONT_L_BUMPER_PIN                  27
+#define FRONT_C_BUMPER_PIN                  28
+#define FRONT_R_BUMPER_PIN                  29
+#define FRONT_RR_BUMPER_PIN                 31
 #define REAR_L_BUMPER_PIN                   12
 #define REAR_R_BUMPER_PIN                   13
 #define MPU6050_GYROSCOPE_INTERUPT_PIN      2       // interupt num 0
 
 // display pins
-#define DISPLAY_SCREEN_0_PIN                11
-#define DISPLAY_SCREEN_1_PIN                10
-#define DISPLAY_SCREEN_2_PIN                9
-#define DISPLAY_SCREEN_3_PIN                8
+#define DISPLAY_SCREEN_TX                   16
+#define DISPLAY_SCREEN_RX                   17
+#define CAMERA_SERVO_AZIM                   5
+#define CAMERA_SERVO_ELEV                   6
 
 #define I2C_ADDRESS 0x09
 

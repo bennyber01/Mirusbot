@@ -2,49 +2,91 @@
 #define DISPLAY_MODULE_H
 
 #include "CommunicationDefinitions.h"
-#include "LiquidCrystal_I2C/LiquidCrystal_I2C.h"
+#include "Nextion/Nextion.h"
 #include "RobotDefinitions.h"
+#include "MenuVisualizer.h"
 
-#define MAX_NUM_OF_SCREENS  4
+#include "CameraModule.h"
+
+enum WindowTypes
+{
+    MAIN_MENU,
+    SENSORS_MENU,
+
+    SENSORS_DISTANCE_DLG,
+    SENSORS_BUMPERS_DLG,
+    SENSORS_ROTATION_DLG,
+    MOTORS_DLG,
+    CAMERA_DLG,
+    LOCATION_DLG,
+    WANDERING_DLG,
+    ABOUT_DLG
+};
+
+class Cerebellum;
 
 class DisplayModule : public ArduinoModule
 {
 public:
-    DisplayModule();
+    DisplayModule(Cerebellum * c);
     ~DisplayModule();
 
     void Init();
+    void Update();
 
     void Print(const MotorsTicks & ticks);
     void Print(const MotorsSpeed & speeds);
     void Print(const FrontSensorsData & data);
     void Print(const BumpersData & data);
     void Print(const WheelsLocation & wheelsLocation);
-    void Print(int voltage);
+    void Print(int azim);
 
-    void Update();
+    void ShowMainMenu();
+    void ShowSensorsMenu();
+    void SetSelectedMenu(int i);
+
+    void GoBack();
+
+    void ShowAboutDialog();
+    void ShowCameraArrowsDialog();
+    void ShowLocationDialog();
+    void ShowSensorsDistanceDialog();
+    void ShowSensorsBumpersDialog();
+    void ShowSensorsRotationDialog();
+    void ShowMotorsDialog();
+    void ShowWanderingDialog();
+
+    MenuVisualizer * GetMenuVisualizer() { return &menuVisualizer; }
+
+    void CenterCam();
+    void SetAzimMove(int a) { azimMove = a; }
+    void SetElevMove(int e) { elevMove = e; }
 
 private:
-    LiquidCrystal_I2C lcd;
-
-    int screenNum;
-    int newScreenNum;
-    unsigned long lastScreenChangeTime;
     unsigned long lastScreenUpdateTime;
+    bool isCurrScreenNeedUpdate;
 
-    bool isUpdateScr[MAX_NUM_OF_SCREENS];
+    MotorsTicks motorsTicks;
+    MotorsSpeed motorsSpeed;
+    FrontSensorsData frontSensorsData;
+    WheelsLocation wheelsLocation;
+    BumpersData bumpersData;
+    int azim;
 
-    MotorsTicks motorsTicks;                // scr: 0
-    MotorsSpeed motorsSpeed;                // scr: 0
-    FrontSensorsData frontSensorsData;      // scr: 1
-    WheelsLocation wheelsLocation;          // scr: 2
-    BumpersData bumpersData;                // scr: 3
-    int voltage;                            // scr: 3
+    MenuVisualizer menuVisualizer;
+    int lastMainMenuScreen;
+    int lastSensorsMenuScreen;
+    WindowTypes currMenu;
 
-    void ShowScreen0();
-    void ShowScreen1();
-    void ShowScreen2();
-    void ShowScreen3();
+    Cerebellum * cerebellum;
+    int azimMove, elevMove;
+    unsigned long lastCameraAnglesUpdate;
+    void UpdateCamLocation();
+
+    void SetCallbacksToNextionVars();
+
+    void SetSelectedMainMenu(int i, int currScreen);
+    void SetSelectedSensorsMenu(int i, int currScreen);
 };
 
 #endif
