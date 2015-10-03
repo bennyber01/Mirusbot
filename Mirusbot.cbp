@@ -723,6 +723,8 @@
 		<Unit filename="Nextion/NexWaveform.cpp" />
 		<Unit filename="Nextion/NexWaveform.h" />
 		<Unit filename="Nextion/Nextion.h" />
+		<Unit filename="PololuMaestro/PololuMaestro.cpp" />
+		<Unit filename="PololuMaestro/PololuMaestro.h" />
 		<Unit filename="RobotBehaviour.cpp" />
 		<Unit filename="RobotBehaviour.h" />
 		<Unit filename="RobotDefinitions.h" />
