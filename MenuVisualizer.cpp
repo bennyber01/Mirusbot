@@ -10,8 +10,9 @@ bool sendNextionCommand(const char * format, ...)
     va_list args;
     va_start(args, format);
     vsnprintf(commandStr, sizeof(commandStr) - 1, format, args);
-    dbSerialPrintln(commandStr);
+    commandStr[sizeof(commandStr) - 1] = 0;
     va_end(args);
+    dbSerialPrintln(commandStr);
     sendCommand(commandStr);
     return recvRetCommandFinished();
 }
