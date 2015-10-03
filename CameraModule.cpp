@@ -1,6 +1,8 @@
 #include "CameraModule.h"
 
-CameraModule::CameraModule()
+#define maestroSerial Serial3
+
+CameraModule::CameraModule() : maestro(maestroSerial)
 {
     azim = elev = 0;
 }
@@ -12,8 +14,7 @@ CameraModule::~CameraModule()
 
 void CameraModule::Init()
 {
-    azim_servo.attach(CAMERA_SERVO_AZIM);
-    elev_servo.attach(CAMERA_SERVO_ELEV);
+    maestroSerial.begin(9600);
 }
 
 void CameraModule::Update()
@@ -27,13 +28,24 @@ void CameraModule::ResetAngles()
     SetElev(0);
 }
 
+/* setTarget takes the channel number you want to control, and
+   the target position in units of 1/4 microseconds. A typical
+   RC hobby servo responds to pulses between 1 ms (4000) and 2
+   ms (8000). */
+
+// 6000 = 1500 us
+// 7000 = 1750 us
+// 5000 = 1250 us
+
 void CameraModule::SetAzim(int val)
 {
     azim = val;
-    azim_servo.write(azim + 90);
+    int ms = map(azim, -90, 90, 4000, 8000);
+    maestro.setTarget(0, ms);
 }
 void CameraModule::SetElev(int val)
 {
     elev = val;
-    elev_servo.write(elev + 90);
+    int ms = map(elev, -90, 90, 4000, 8000);
+    maestro.setTarget(1, ms);
 }

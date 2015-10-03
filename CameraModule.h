@@ -2,7 +2,8 @@
 #define CAMERAMODULE_H
 
 #include "CommunicationDefinitions.h"
-#include "Servo.h"
+
+#include <PololuMaestro/PololuMaestro.h>
 
 class CameraModule
 {
@@ -25,8 +26,7 @@ private:
     int azim;
     int elev;
 
-    Servo azim_servo;
-    Servo elev_servo;
+    MiniMaestro maestro;
 };
 
 #endif // CAMERAMODULE_H
