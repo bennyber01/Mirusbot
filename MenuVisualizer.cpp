@@ -3,15 +3,77 @@
 #include "NextionGlobalCallbacks.h"
 #include <stdarg.h>
 
+char tempStr[30];
 char commandStr[30];
+
+char* double2str(double d, int prec = 100)
+{
+    int i = int(d);
+    d -= i;
+    d *= prec;
+    int j = abs(int(d));
+    sprintf(tempStr, "%d.%d", i, j);
+    return tempStr;
+}
+
+//bool sendNextionCommand(const char * format, ...)
+//{
+//    va_list args;
+//    va_start(args, format);
+//    vsnprintf(commandStr, sizeof(commandStr) - 1, format, args);
+//    commandStr[sizeof(commandStr) - 1] = 0;
+//    va_end(args);
+//    dbSerialPrintln(commandStr);
+//    sendCommand(commandStr);
+//    return recvRetCommandFinished();
+//}
 
 bool sendNextionCommand(const char * format, ...)
 {
-    va_list args;
-    va_start(args, format);
-    vsnprintf(commandStr, sizeof(commandStr) - 1, format, args);
-    commandStr[sizeof(commandStr) - 1] = 0;
-    va_end(args);
+    int argCount=0, commandLen=0;
+// for(int i=0; format[i]!='\0';i++)  if(format[i]=='%')  argCount++; //Evaluate number of arguments required to be printed
+
+    va_list argv;
+    va_start(argv, format);
+    for (int i = 0; format[i] != '\0'; ++i) //Iterate over formatting string
+    {
+        if(format[i]=='%')
+        {
+            ++argCount;
+
+            //Clear buffer
+            tempStr[0] = 0;
+
+            //Process argument
+            switch(format[++i])
+            {
+            case 'd':
+                commandLen += snprintf(commandStr + commandLen, sizeof(commandStr) - commandLen, "%d", int(va_arg(argv, int)));
+                break;
+            case 'l':
+                commandLen += snprintf(commandStr + commandLen, sizeof(commandStr) - commandLen, "%l", long(va_arg(argv, long)));
+                break;
+            case 'f':
+                commandLen += snprintf(commandStr + commandLen, sizeof(commandStr) - commandLen, "%s", double2str(va_arg(argv, double)));
+                break;
+            case 'c':
+                commandLen += snprintf(commandStr + commandLen, sizeof(commandStr) - commandLen, "%c", char(va_arg(argv, int)));
+                break;
+            case 's':
+                commandLen += snprintf(commandStr + commandLen, sizeof(commandStr) - commandLen, "%s", (char*)(va_arg(argv, char *)));
+                break;
+            }
+        }
+        else
+        {
+            //Add to buffer
+            commandStr[commandLen] = format[i];
+            ++commandLen;
+        }
+    }
+    va_end(argv);
+    commandStr[commandLen] = 0;
+
     dbSerialPrintln(commandStr);
     sendCommand(commandStr);
     return recvRetCommandFinished();

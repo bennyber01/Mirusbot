@@ -38,9 +38,9 @@ void DisplayModule::ShowSensorsDistanceDialog()
 
 void DisplayModule::UpdateSensorsDistanceDialog()
 {
-    sendNextionCommand("t1.txt=\"LSensor Dist: %0.1f cm\"", frontSensorsData.LSensorDist);
-    sendNextionCommand("t2.txt=\"CSensor Dist: %0.1f cm\"", frontSensorsData.CSensorDist);
-    sendNextionCommand("t3.txt=\"RSensor Dist: %0.1f cm\"", frontSensorsData.RSensorDist);
+    sendNextionCommand("t1.txt=\"LSensor Dist: %f cm\"", frontSensorsData.LSensorDist);
+    sendNextionCommand("t2.txt=\"CSensor Dist: %f cm\"", frontSensorsData.CSensorDist);
+    sendNextionCommand("t3.txt=\"RSensor Dist: %f cm\"", frontSensorsData.RSensorDist);
 }
 
 void DisplayModule::ShowSensorsBumpersDialog()
@@ -91,10 +91,10 @@ void DisplayModule::ShowLocationDialog()
 
 void DisplayModule::UpdateLocationDialog()
 {
-    sendNextionCommand("t1.txt=\"L: (%d,%d)\"", wheelsLocation.leftWheelLoc.x,  wheelsLocation.leftWheelLoc.y);
-    sendNextionCommand("t2.txt=\"R: (%d,%d)\"", wheelsLocation.rightWheelLoc.x, wheelsLocation.rightWheelLoc.y);
+    sendNextionCommand("t1.txt=\"L: (%f,%f)\"", wheelsLocation.leftWheelLoc.x,  wheelsLocation.leftWheelLoc.y);
+    sendNextionCommand("t2.txt=\"R: (%f,%f)\"", wheelsLocation.rightWheelLoc.x, wheelsLocation.rightWheelLoc.y);
     Vector2D pos = (wheelsLocation.leftWheelLoc + wheelsLocation.rightWheelLoc) * 0.5;
-    sendNextionCommand("t3.txt=\"Pos: (%d,%d)\"", pos.x, pos.y);
+    sendNextionCommand("t3.txt=\"Pos: (%f,%f)\"", pos.x, pos.y);
 }
 
 void DisplayModule::ShowMotorsDialog()
