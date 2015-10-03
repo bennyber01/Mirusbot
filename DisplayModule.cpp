@@ -213,7 +213,7 @@ void DisplayModule::Update()
     UpdateCamLocation();
 
     unsigned long time = millis();
-    if (lastScreenUpdateTime + 300 < time && isCurrScreenNeedUpdate)
+    if (lastScreenUpdateTime + 100 < time && isCurrScreenNeedUpdate)
     {
         switch (currMenu)
         {
