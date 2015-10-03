@@ -40,6 +40,7 @@ public:
     void Print(const BumpersData & data);
     void Print(const WheelsLocation & wheelsLocation);
     void Print(int azim);
+    void PrintWandering(bool isWander);
 
     void ShowMainMenu();
     void ShowSensorsMenu();
@@ -61,6 +62,7 @@ public:
     void ShowMotorsDialog();
     void UpdateMotorsDialog();
     void ShowWanderingDialog();
+    void UpdateWanderingDialog();
 
     MenuVisualizer * GetMenuVisualizer() { return &menuVisualizer; }
 
@@ -78,6 +80,7 @@ private:
     WheelsLocation wheelsLocation;
     BumpersData bumpersData;
     int azim;
+    bool isWander;
 
     MenuVisualizer menuVisualizer;
     int lastMainMenuScreen;

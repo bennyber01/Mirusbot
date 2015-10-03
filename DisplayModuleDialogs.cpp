@@ -117,6 +117,11 @@ void DisplayModule::ShowWanderingDialog()
 {
     sendNextionCommand("page 4");
     sendNextionCommand("t0.txt=\"Wander\"");
-    sendNextionCommand("p0.pic=%d", ((cerebellum -> IsWander())?8:7));
+    UpdateWanderingDialog();
     currMenu = WANDERING_DLG;
+}
+
+void DisplayModule::UpdateWanderingDialog()
+{
+    sendNextionCommand("p0.pic=%d", ((cerebellum -> IsWander())?8:7));
 }

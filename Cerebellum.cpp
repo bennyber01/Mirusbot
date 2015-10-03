@@ -50,6 +50,7 @@ void Cerebellum::Update()
     disp.Print(sensors.GetBumpersData());
     disp.Print(robotWeelsLocation);
     disp.Print(motors.GetBatteryVoltage());
+    disp.PrintWandering(isWander);
 
     if (isWander)
         UpdateRobotBehaviour();

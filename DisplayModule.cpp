@@ -45,6 +45,8 @@ DisplayModule::DisplayModule(Cerebellum * c) : cerebellum(c), menuVisualizer(thi
 
     azimMove = elevMove = 0;
     lastCameraAnglesUpdate = 0;
+
+    isWander = false;
 }
 
 DisplayModule::~DisplayModule()
@@ -121,6 +123,15 @@ void DisplayModule::Print(int azim)
     this -> azim = azim;
 
     if (currMenu == SENSORS_ROTATION_DLG)
+        isCurrScreenNeedUpdate |= isUpdate;
+}
+
+void DisplayModule::PrintWandering(bool isWander)
+{
+    bool isUpdate = this -> isWander != isWander;
+    this -> isWander = isWander;
+
+    if (currMenu == WANDERING_DLG)
         isCurrScreenNeedUpdate |= isUpdate;
 }
 
@@ -211,8 +222,8 @@ void DisplayModule::Update()
         case SENSORS_ROTATION_DLG:     UpdateSensorsRotationDialog();   break;
         case MOTORS_DLG:               UpdateMotorsDialog();            break;
         case CAMERA_DLG:               UpdateCameraArrowsDialog();      break;
-        case LOCATION_DLG:             UpdateLocationDialog();            break;
-        case WANDERING_DLG:            ShowWanderingDialog();           break;
+        case LOCATION_DLG:             UpdateLocationDialog();          break;
+        case WANDERING_DLG:            UpdateWanderingDialog();         break;
         case ABOUT_DLG:                ShowAboutDialog();               break;
         }
 
