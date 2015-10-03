@@ -16,8 +16,8 @@
 #define FRONT_C_BUMPER_PIN                  28
 #define FRONT_R_BUMPER_PIN                  29
 #define FRONT_RR_BUMPER_PIN                 31
-#define REAR_L_BUMPER_PIN                   12
-#define REAR_R_BUMPER_PIN                   13
+#define REAR_L_BUMPER_PIN                   23
+#define REAR_R_BUMPER_PIN                   22
 #define MPU6050_GYROSCOPE_INTERUPT_PIN      2       // interupt num 0
 
 // display pins

@@ -49,11 +49,17 @@ public:
 
     void ShowAboutDialog();
     void ShowCameraArrowsDialog();
+    void UpdateCameraArrowsDialog();
     void ShowLocationDialog();
+    void UpdateLocationDialog();
     void ShowSensorsDistanceDialog();
+    void UpdateSensorsDistanceDialog();
     void ShowSensorsBumpersDialog();
+    void UpdateSensorsBumpersDialog();
     void ShowSensorsRotationDialog();
+    void UpdateSensorsRotationDialog();
     void ShowMotorsDialog();
+    void UpdateMotorsDialog();
     void ShowWanderingDialog();
 
     MenuVisualizer * GetMenuVisualizer() { return &menuVisualizer; }

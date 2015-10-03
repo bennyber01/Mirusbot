@@ -188,11 +188,11 @@ void DisplayModule::SetCallbacksToNextionVars()
 
     t4_0.attachPop(goBackCallback, this);
     q4_0.attachPop(goBackCallback, this);
-    p4_0.attachPop(toggleWanderingCallback, this);
+    p4_0.attachPop(toggleWanderingCallback, cerebellum);
 
     t5_0.attachPop(goBackCallback, this);
     q5_0.attachPop(goBackCallback, this);
-    m5_0.attachPop(resetGaugeCallback, this);
+    m5_0.attachPop(resetGaugeCallback, cerebellum);
 }
 
 void DisplayModule::Update()
@@ -200,6 +200,25 @@ void DisplayModule::Update()
     nexLoop(nex_listen_list);
 
     UpdateCamLocation();
+
+    unsigned long time = millis();
+    if (lastScreenUpdateTime + 300 < time && isCurrScreenNeedUpdate)
+    {
+        switch (currMenu)
+        {
+        case SENSORS_DISTANCE_DLG:     UpdateSensorsDistanceDialog();   break;
+        case SENSORS_BUMPERS_DLG:      UpdateSensorsBumpersDialog();    break;
+        case SENSORS_ROTATION_DLG:     UpdateSensorsRotationDialog();   break;
+        case MOTORS_DLG:               UpdateMotorsDialog();            break;
+        case CAMERA_DLG:               UpdateCameraArrowsDialog();      break;
+        case LOCATION_DLG:             UpdateLocationDialog();            break;
+        case WANDERING_DLG:            ShowWanderingDialog();           break;
+        case ABOUT_DLG:                ShowAboutDialog();               break;
+        }
+
+        isCurrScreenNeedUpdate = false;
+        lastScreenUpdateTime = time;
+    }
 }
 
 void DisplayModule::ShowMainMenu()
@@ -317,17 +336,27 @@ void DisplayModule::SetSelectedSensorsMenu(int i, int currScreen)
 void DisplayModule::UpdateCamLocation()
 {
     unsigned long time = millis();
+    bool isUpdate = false;
 
     if (lastCameraAnglesUpdate + 50 < time)
     {
         if (azimMove)
+        {
             cerebellum -> GetCameraModule().SetAzim(cerebellum -> GetCameraModule().GetAzim() + azimMove);
+            isUpdate = true;
+        }
 
         if (elevMove)
+        {
             cerebellum -> GetCameraModule().SetElev(cerebellum -> GetCameraModule().GetElev() + elevMove);
+            isUpdate = true;
+        }
 
         lastCameraAnglesUpdate = time;
     }
+
+    if (currMenu == CAMERA_DLG)
+        isCurrScreenNeedUpdate |= isUpdate;
 }
 
 void DisplayModule::CenterCam()

@@ -2,6 +2,7 @@
 #include "MenuVisualizer.h"
 #include "DisplayModule.h"
 #include "CameraModule.h"
+#include "Cerebellum.h"
 
 void showMainMenuCallback(void *ptr)
 {
@@ -129,12 +130,13 @@ void cameraCenterCallback(void *ptr)
 void toggleWanderingCallback(void *ptr)
 {
     dbSerialPrintln("toggleWanderingCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> ToggleWander();
 }
 
 void resetGaugeCallback(void *ptr)
 {
     dbSerialPrintln("resetGaugeCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
 }
 

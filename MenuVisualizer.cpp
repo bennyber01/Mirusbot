@@ -10,6 +10,7 @@ bool sendNextionCommand(const char * format, ...)
     va_list args;
     va_start(args, format);
     vsnprintf(commandStr, sizeof(commandStr) - 1, format, args);
+    dbSerialPrintln(commandStr);
     va_end(args);
     sendCommand(commandStr);
     return recvRetCommandFinished();
@@ -101,11 +102,11 @@ void MenuVisualizer::Show(int scr)
     switch (menusToShow)
     {
         case 3:
-            sendNextionCommand(commandStr, "t3.txt=\"%s\"", titles[screenToShow * 3 + 2]);
+            sendNextionCommand("t3.txt=\"%s\"", titles[screenToShow * 3 + 2]);
         case 2:
-            sendNextionCommand(commandStr, "t2.txt=\"%s\"", titles[screenToShow * 3 + 1]);
+            sendNextionCommand("t2.txt=\"%s\"", titles[screenToShow * 3 + 1]);
         case 1:
-            sendNextionCommand(commandStr, "t1.txt=\"%s\"", titles[screenToShow * 3 + 0]);
+            sendNextionCommand("t1.txt=\"%s\"", titles[screenToShow * 3 + 0]);
     }
 }
 
@@ -115,20 +116,23 @@ void MenuVisualizer::ShowMenus(int i)
  //       return;
 
     // menu 1
-    sendNextionCommand("t1.picc=%d", ((i>0)?3:4));
-    sendNextionCommand("q0.picc=%d", ((i>0)?3:4));
+    int m1 = ((i>0)?3:4);
+    sendNextionCommand("t1.picc=%d", m1);
+    sendNextionCommand("q0.picc=%d", m1);
 //        sendNextionCommand("tsw t1,0");   //component touch invalid
 //        sendNextionCommand("tsw q0,0");   //component touch invalid
 
     // menu 2
-    sendNextionCommand("t2.picc=%d", ((i>1)?3:4));
-    sendNextionCommand("q1.picc=%d", ((i>1)?3:4));
+    int m2 = ((i>1)?3:4);
+    sendNextionCommand("t2.picc=%d", m2);
+    sendNextionCommand("q1.picc=%d", m2);
 //        sendNextionCommand("tsw t2,0");   //component touch invalid
 //        sendNextionCommand("tsw q1,0");   //component touch invalid
 
     // menu 3
-    sendNextionCommand("t3.picc=%d", ((i>2)?3:4));
-    sendNextionCommand("q2.picc=%d", ((i>2)?3:4));
+    int m3 = ((i>2)?3:4);
+    sendNextionCommand("t3.picc=%d", m3);
+    sendNextionCommand("q2.picc=%d", m3);
 //        sendNextionCommand("tsw t3,0");   //component touch invalid
 //        sendNextionCommand("tsw q2,0");   //component touch invalid
 
