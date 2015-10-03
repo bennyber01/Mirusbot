@@ -41,6 +41,7 @@ public:
     void Print(const WheelsLocation & wheelsLocation);
     void Print(int azim);
     void PrintWandering(bool isWander);
+    void PrintCameraAngles(int azim, int elev);
 
     void ShowMainMenu();
     void ShowSensorsMenu();
@@ -66,10 +67,6 @@ public:
 
     MenuVisualizer * GetMenuVisualizer() { return &menuVisualizer; }
 
-    void CenterCam();
-    void SetAzimMove(int a) { azimMove = a; }
-    void SetElevMove(int e) { elevMove = e; }
-
 private:
     unsigned long lastScreenUpdateTime;
     bool isCurrScreenNeedUpdate;
@@ -81,6 +78,7 @@ private:
     BumpersData bumpersData;
     int azim;
     bool isWander;
+    int camAzim, camElev;
 
     MenuVisualizer menuVisualizer;
     int lastMainMenuScreen;
@@ -88,9 +86,6 @@ private:
     WindowTypes currMenu;
 
     Cerebellum * cerebellum;
-    int azimMove, elevMove;
-    unsigned long lastCameraAnglesUpdate;
-    void UpdateCamLocation();
 
     void SetCallbacksToNextionVars();
 

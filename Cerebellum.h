@@ -21,8 +21,11 @@ public:
     void ToggleWander();
     bool IsWander() { return isWander; }
 
-    CameraModule  & GetCameraModule()  { return cameraModule; }
-    SensorsModule * GetSensorsModule() { return &sensors;      }
+    SensorsModule * GetSensorsModule() { return &sensors; }
+
+    void CenterCam();
+    void SetAzimMove(int a) { azimMove = a; }
+    void SetElevMove(int e) { elevMove = e; }
 
 private:
     DisplayModule disp;
@@ -37,6 +40,10 @@ private:
     void HandleCommand(const CommandEntry & entry);
 
     bool isWander;
+
+    int azimMove, elevMove;
+    unsigned long lastCameraAnglesUpdate;
+    void UpdateCamLocation();
 };
 
 #endif

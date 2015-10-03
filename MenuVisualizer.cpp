@@ -31,9 +31,10 @@ char* double2str(double d, int prec = 100)
 bool sendNextionCommand(const char * format, ...)
 {
     int argCount=0, commandLen=0;
-// for(int i=0; format[i]!='\0';i++)  if(format[i]=='%')  argCount++; //Evaluate number of arguments required to be printed
+//    for(int i = 0; format[i]; ++i) if (format[i] == '%') ++argCount; //Evaluate number of arguments required to be printed
 
     va_list argv;
+//    va_start(argv, argCount);
     va_start(argv, format);
     for (int i = 0; format[i] != '\0'; ++i) //Iterate over formatting string
     {
@@ -76,7 +77,7 @@ bool sendNextionCommand(const char * format, ...)
 
     dbSerialPrintln(commandStr);
     sendCommand(commandStr);
-    return recvRetCommandFinished();
+    return true;//recvRetCommandFinished();
 }
 
 MenuVisualizer::MenuVisualizer(DisplayModule * disp)

@@ -43,8 +43,7 @@ DisplayModule::DisplayModule(Cerebellum * c) : cerebellum(c), menuVisualizer(thi
     lastMainMenuScreen = -1;
     lastSensorsMenuScreen = -1;
 
-    azimMove = elevMove = 0;
-    lastCameraAnglesUpdate = 0;
+    camAzim = camElev = 0;
 
     isWander = false;
 }
@@ -135,6 +134,17 @@ void DisplayModule::PrintWandering(bool isWander)
         isCurrScreenNeedUpdate |= isUpdate;
 }
 
+void DisplayModule::PrintCameraAngles(int azim, int elev)
+{
+    bool isUpdate = camAzim != azim || camElev != elev;
+
+    camAzim = azim;
+    camElev = elev;
+
+    if (currMenu == CAMERA_DLG)
+        isCurrScreenNeedUpdate |= isUpdate;
+}
+
 void DisplayModule::Init()
 {
     dbSerialBegin(9600);
@@ -187,15 +197,15 @@ void DisplayModule::SetCallbacksToNextionVars()
 
     ////////////////////////////////////////
 
-    m3_0.attachPush(cameraLeftArrowPressedCallback, this);
-    m3_0.attachPop(cameraLeftArrowReleasedCallback, this);
-    m3_1.attachPush(cameraUpArrowPressedCallback, this);
-    m3_1.attachPop(cameraUpArrowReleasedCallback, this);
-    m3_2.attachPop(cameraCenterCallback, this);
-    m3_3.attachPush(cameraDownArrowPressedCallback, this);
-    m3_3.attachPop(cameraDownArrowReleasedCallback, this);
-    m3_4.attachPush(cameraRightArrowPressedCallback, this);
-    m3_4.attachPop(cameraRightArrowReleasedCallback, this);
+    m3_0.attachPush(cameraLeftArrowPressedCallback, cerebellum);
+    m3_0.attachPop(cameraLeftArrowReleasedCallback, cerebellum);
+    m3_1.attachPush(cameraUpArrowPressedCallback, cerebellum);
+    m3_1.attachPop(cameraUpArrowReleasedCallback, cerebellum);
+    m3_2.attachPop(cameraCenterCallback, cerebellum);
+    m3_3.attachPush(cameraDownArrowPressedCallback, cerebellum);
+    m3_3.attachPop(cameraDownArrowReleasedCallback, cerebellum);
+    m3_4.attachPush(cameraRightArrowPressedCallback, cerebellum);
+    m3_4.attachPop(cameraRightArrowReleasedCallback, cerebellum);
 
     t4_0.attachPop(goBackCallback, this);
     q4_0.attachPop(goBackCallback, this);
@@ -209,8 +219,6 @@ void DisplayModule::SetCallbacksToNextionVars()
 void DisplayModule::Update()
 {
     nexLoop(nex_listen_list);
-
-    UpdateCamLocation();
 
     unsigned long time = millis();
     if (lastScreenUpdateTime + 100 < time && isCurrScreenNeedUpdate)
@@ -342,35 +350,4 @@ void DisplayModule::SetSelectedSensorsMenu(int i, int currScreen)
         ShowSensorsRotationDialog();
         break;
     }
-}
-
-void DisplayModule::UpdateCamLocation()
-{
-    unsigned long time = millis();
-    bool isUpdate = false;
-
-    if (lastCameraAnglesUpdate + 50 < time)
-    {
-        if (azimMove)
-        {
-            cerebellum -> GetCameraModule().SetAzim(cerebellum -> GetCameraModule().GetAzim() + azimMove);
-            isUpdate = true;
-        }
-
-        if (elevMove)
-        {
-            cerebellum -> GetCameraModule().SetElev(cerebellum -> GetCameraModule().GetElev() + elevMove);
-            isUpdate = true;
-        }
-
-        lastCameraAnglesUpdate = time;
-    }
-
-    if (currMenu == CAMERA_DLG)
-        isCurrScreenNeedUpdate |= isUpdate;
-}
-
-void DisplayModule::CenterCam()
-{
-    cerebellum -> GetCameraModule().ResetAngles();
 }

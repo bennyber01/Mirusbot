@@ -3,7 +3,8 @@
 
 Cerebellum::Cerebellum() : disp(this)
 {
-
+    azimMove = elevMove = 0;
+    lastCameraAnglesUpdate = 0;
 }
 
 Cerebellum::~Cerebellum()
@@ -22,6 +23,8 @@ void Cerebellum::Init()
 
 void Cerebellum::Update()
 {
+    UpdateCamLocation();
+
     // update data from peripherals
     motors.Update();
     sensors.Update();
@@ -51,6 +54,7 @@ void Cerebellum::Update()
     disp.Print(robotWeelsLocation);
     disp.Print(motors.GetBatteryVoltage());
     disp.PrintWandering(isWander);
+    disp.PrintCameraAngles(cameraModule.GetAzim(), cameraModule.GetElev());
 
     if (isWander)
         UpdateRobotBehaviour();
@@ -67,4 +71,25 @@ void Cerebellum::Update()
 void Cerebellum::ToggleWander()
 {
     isWander = !isWander;
+}
+
+void Cerebellum::UpdateCamLocation()
+{
+    unsigned long time = millis();
+
+    if (lastCameraAnglesUpdate + 50 < time)
+    {
+        if (azimMove)
+            cameraModule.SetAzim(cameraModule.GetAzim() + azimMove);
+
+        if (elevMove)
+            cameraModule.SetElev(cameraModule.GetElev() + elevMove);
+
+        lastCameraAnglesUpdate = time;
+    }
+}
+
+void Cerebellum::CenterCam()
+{
+    cameraModule.ResetAngles();
 }

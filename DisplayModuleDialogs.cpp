@@ -24,8 +24,8 @@ void DisplayModule::ShowCameraArrowsDialog()
 
 void DisplayModule::UpdateCameraArrowsDialog()
 {
-    sendNextionCommand("t1.txt=\"Azim:%d\"", cerebellum -> GetCameraModule().GetAzim());
-    sendNextionCommand("t2.txt=\"Elev:%d\"", cerebellum -> GetCameraModule().GetElev());
+    sendNextionCommand("t1.txt=\"Azim:%d\"", camAzim);
+    sendNextionCommand("t2.txt=\"Elev:%d\"", camElev);
 }
 
 void DisplayModule::ShowSensorsDistanceDialog()

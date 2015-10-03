@@ -68,64 +68,64 @@ void showPrevMenuCallback(void *ptr)
 void cameraUpArrowPressedCallback(void *ptr)
 {
     dbSerialPrintln("cameraUpArrowPressedCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
-    disp -> SetElevMove(-1);
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> SetElevMove(-1);
 }
 
 void cameraUpArrowReleasedCallback(void *ptr)
 {
     dbSerialPrintln("cameraUpArrowReleasedCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
-    disp -> SetElevMove(0);
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> SetElevMove(0);
 }
 
 void cameraDownArrowPressedCallback(void *ptr)
 {
     dbSerialPrintln("cameraDownArrowPressedCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
-    disp -> SetElevMove(1);
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> SetElevMove(1);
 }
 
 void cameraDownArrowReleasedCallback(void *ptr)
 {
     dbSerialPrintln("cameraDownArrowReleasedCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
-    disp -> SetElevMove(0);
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> SetElevMove(0);
 }
 
 void cameraLeftArrowPressedCallback(void *ptr)
 {
     dbSerialPrintln("cameraLeftArrowPressedCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
-    disp -> SetAzimMove(1);
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> SetAzimMove(1);
 }
 
 void cameraLeftArrowReleasedCallback(void *ptr)
 {
     dbSerialPrintln("cameraLeftArrowReleasedCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
-    disp -> SetAzimMove(0);
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> SetAzimMove(0);
 }
 
 void cameraRightArrowPressedCallback(void *ptr)
 {
     dbSerialPrintln("cameraRightArrowPressedCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
-    disp -> SetAzimMove(-1);
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> SetAzimMove(-1);
 }
 
 void cameraRightArrowReleasedCallback(void *ptr)
 {
     dbSerialPrintln("cameraRightArrowReleasedCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
-    disp -> SetAzimMove(0);
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> SetAzimMove(0);
 }
 
 void cameraCenterCallback(void *ptr)
 {
     dbSerialPrintln("cameraCenterCallback");
-    DisplayModule * disp = (DisplayModule*) ptr;
-    disp -> CenterCam();
+    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    cerebellum -> CenterCam();
 }
 
 void toggleWanderingCallback(void *ptr)
