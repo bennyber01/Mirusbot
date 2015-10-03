@@ -3,6 +3,7 @@
 #include "DisplayModule.h"
 #include "CameraModule.h"
 #include "Cerebellum.h"
+#include "SensorsModule.h"
 
 void showMainMenuCallback(void *ptr)
 {
@@ -137,6 +138,7 @@ void toggleWanderingCallback(void *ptr)
 void resetGaugeCallback(void *ptr)
 {
     dbSerialPrintln("resetGaugeCallback");
-    Cerebellum * cerebellum = (Cerebellum*) ptr;
+    SensorsModule * sensors = (SensorsModule*) ptr;
+    sensors -> ResetAzim();
 }
 

@@ -18,6 +18,7 @@ public:
     BumpersData GetBumpersData();
 
     int GetAzim() { return 0/*imuSensor.GetAzim()*/; }
+    void ResetAzim() {}
 
 private:
     FrontSensorsData frontSensorsData;

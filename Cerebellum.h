@@ -21,7 +21,8 @@ public:
     void ToggleWander();
     bool IsWander() { return isWander; }
 
-    CameraModule & GetCameraModule() { return cameraModule; }
+    CameraModule  & GetCameraModule()  { return cameraModule; }
+    SensorsModule * GetSensorsModule() { return &sensors;      }
 
 private:
     DisplayModule disp;

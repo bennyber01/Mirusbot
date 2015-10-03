@@ -203,7 +203,7 @@ void DisplayModule::SetCallbacksToNextionVars()
 
     t5_0.attachPop(goBackCallback, this);
     q5_0.attachPop(goBackCallback, this);
-    m5_0.attachPop(resetGaugeCallback, cerebellum);
+    m5_0.attachPop(resetGaugeCallback, cerebellum -> GetSensorsModule());
 }
 
 void DisplayModule::Update()
