@@ -669,7 +669,6 @@
 		<Unit filename="DistanceSensorFilter.h" />
 		<Unit filename="I2Cdev/I2Cdev.cpp" />
 		<Unit filename="I2Cdev/I2Cdev.h" />
-		<Unit filename="I2Cdev/keywords.txt" />
 		<Unit filename="IMUSensor.cpp" />
 		<Unit filename="IMUSensor.h" />
 		<Unit filename="MPU6050/MPU6050.cpp" />
