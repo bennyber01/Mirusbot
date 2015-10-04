@@ -116,7 +116,7 @@ void DisplayModule::Print(const BumpersData & data)
         isCurrScreenNeedUpdate |= isUpdate;
 }
 
-void DisplayModule::Print(int azim)
+void DisplayModule::PrintAzim(int azim)
 {
     bool isUpdate = this -> azim != azim;
     this -> azim = azim;

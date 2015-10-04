@@ -56,7 +56,7 @@ SensorsModule::~SensorsModule()
 
 void SensorsModule::Init()
 {
-    //imuSensor.Init();
+    imuSensor.Init();
 
     // no need to init alanog pins for input
     pinMode(FRONT_LL_BUMPER_PIN, INPUT);
@@ -70,7 +70,7 @@ void SensorsModule::Init()
 
 void SensorsModule::Update()
 {
-    //imuSensor.Update();
+    imuSensor.Update();
 
     bumpersData.FLLBumper = !digitalRead(FRONT_LL_BUMPER_PIN);
     //delay(2);

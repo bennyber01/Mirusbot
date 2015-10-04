@@ -673,8 +673,7 @@
 		<Unit filename="IMUSensor.h" />
 		<Unit filename="MPU6050/MPU6050.cpp" />
 		<Unit filename="MPU6050/MPU6050.h" />
-		<Unit filename="MPU6050/MPU6050_6Axis_MotionApps20.h" />
-		<Unit filename="MPU6050/MPU6050_9Axis_MotionApps41.h" />
+		<Unit filename="MPU6050/MPU6050_6Axis_MotionApps20.cpp" />
 		<Unit filename="MPU6050/helper_3dmath.h" />
 		<Unit filename="MathMethods.h" />
 		<Unit filename="Matrix2x2.h" />

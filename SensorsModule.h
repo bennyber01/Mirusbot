@@ -3,7 +3,7 @@
 
 #include "CommunicationDefinitions.h"
 #include "DistanceSensorFilter.h"
-//#include "IMUSensor.h"
+#include "IMUSensor.h"
 
 class SensorsModule : public ArduinoModule
 {
@@ -17,13 +17,13 @@ public:
     FrontSensorsData GetFrontSensorsData();
     BumpersData GetBumpersData();
 
-    int GetAzim() { return 0/*imuSensor.GetAzim()*/; }
-    void ResetAzim() {}
+    int GetAzim()    { return imuSensor.GetAzim(); }
+    void ResetAzim() { imuSensor.Reset();          }
 
 private:
     FrontSensorsData frontSensorsData;
     BumpersData bumpersData;
-    //IMUSensor imuSensor;
+    IMUSensor imuSensor;
 
     DistanceSensorFilter frontLeftDistanceSensorFilter;
     DistanceSensorFilter frontCenterDistanceSensorFilter;

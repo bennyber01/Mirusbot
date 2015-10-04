@@ -39,7 +39,7 @@ public:
     void Print(const FrontSensorsData & data);
     void Print(const BumpersData & data);
     void Print(const WheelsLocation & wheelsLocation);
-    void Print(int azim);
+    void PrintAzim(int azim);
     void PrintWandering(bool isWander);
     void PrintCameraAngles(int azim, int elev);
 

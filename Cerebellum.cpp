@@ -52,9 +52,9 @@ void Cerebellum::Update()
     disp.Print(sensors.GetFrontSensorsData());
     disp.Print(sensors.GetBumpersData());
     disp.Print(robotWeelsLocation);
-    disp.Print(motors.GetBatteryVoltage());
     disp.PrintWandering(isWander);
     disp.PrintCameraAngles(cameraModule.GetAzim(), cameraModule.GetElev());
+    disp.PrintAzim(sensors.GetAzim());
 
     if (isWander)
         UpdateRobotBehaviour();

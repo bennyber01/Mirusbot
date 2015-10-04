@@ -76,9 +76,14 @@ void DisplayModule::ShowSensorsRotationDialog()
     currMenu = SENSORS_ROTATION_DLG;
 }
 
+extern void ComputePositiveAngle(int & ang);
+
 void DisplayModule::UpdateSensorsRotationDialog()
 {
-    sendNextionCommand("z0.val=%d", azim);
+    int ang = azim + 90;
+    ComputePositiveAngle(ang);
+    sendNextionCommand("t0.txt=\"Rotation Sensors:%d\"", azim);
+    sendNextionCommand("z0.val=%d", ang);
 }
 
 void DisplayModule::ShowLocationDialog()
