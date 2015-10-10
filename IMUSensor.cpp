@@ -49,6 +49,9 @@ IMUSensor::IMUSensor()
     azim = elev = roll = 0;
     isReset = false;
     azimOffset = elevOffset = rollOffset = 0;
+
+    rawAzim = rawElev = rawRoll = 0;
+    timer = -1;
 }
 
 IMUSensor::~IMUSensor()
@@ -136,7 +139,8 @@ void IMUSensor::Update()
     if (!dmpReady) return;
 
     // wait for MPU interrupt or extra packet(s) available
-    if (!mpuInterrupt && fifoCount < packetSize) {
+    if (!mpuInterrupt && fifoCount < packetSize)
+    {
         // other program behavior stuff here
         // .
         // .
@@ -244,13 +248,48 @@ void IMUSensor::Update()
 //            teapotPacket[11]++; // packetCount, loops at 0xFF on purpose
 //        #endif
 
+        double dt = (double)(micros() - timer) / 1000000; // Calculate delta time
+
         // compute Euler angles in degrees
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-        azim = int(ypr[0] * 180/M_PI);
-        elev = int(ypr[1] * 180/M_PI);
-        roll = int(ypr[2] * 180/M_PI);
+        rawAzim = (ypr[0] * 180.0 / M_PI);
+        rawElev = (ypr[1] * 180.0 / M_PI);
+        rawRoll = (ypr[2] * 180.0 / M_PI);
+
+        if (timer == -1)
+        {
+//            if (1)
+//            {
+//                int lim = 30;
+//                if (int(rawAzim) > azim + lim) rawAzim = azim + 1; else if (int(rawAzim) < azim - lim) rawAzim = azim - 1;
+//                if (int(rawElev) > elev + lim) rawElev = elev + 1; else if (int(rawElev) < elev - lim) rawElev = elev - 1;
+//                if (int(rawRoll) > roll + lim) rawRoll = roll + 1; else if (int(rawRoll) < roll - lim) rawRoll = roll - 1;
+//            }
+
+            azim = (int) rawAzim;
+            elev = (int) rawElev;
+            roll = (int) rawRoll;
+
+            kalmanAzim.setAngle(rawAzim); // Set starting angle
+            kalmanElev.setAngle(rawElev); // Set starting angle
+            kalmanRoll.setAngle(rawRoll); // Set starting angle
+        }
+        else
+        {
+            // Why divide by 131.0?
+            // It has to do with the so-called Sensitivity Scale Factor.
+            // MPU-6000 and MPU-6050 Product Specification Revision 3.3
+            // The factor is 131 LSB/(deg/s) which means that you must divide the raw data to 131 in order to get real angular velocity.
+            double gyroAzimRate = rawAzim / 131.0; // Convert to deg/s
+            double gyroElevRate = rawElev / 131.0; // Convert to deg/s
+            double gyroRollRate = rawRoll / 131.0; // Convert to deg/s
+
+            azim = (int) kalmanAzim.getAngle(rawAzim, gyroAzimRate, dt); // Calculate the angle using a Kalman filter
+            elev = (int) kalmanElev.getAngle(rawElev, gyroElevRate, dt); // Calculate the angle using a Kalman filter
+            roll = (int) kalmanRoll.getAngle(rawRoll, gyroRollRate, dt); // Calculate the angle using a Kalman filter
+        }
 
         if (isReset)
         {
@@ -266,6 +305,8 @@ void IMUSensor::Update()
 //        Serial.print(elev);
 //        Serial.print("\t");
 //        Serial.println(roll);
+
+        timer = micros();
     }
 }
 

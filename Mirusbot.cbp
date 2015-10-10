@@ -671,6 +671,7 @@
 		<Unit filename="I2Cdev/I2Cdev.h" />
 		<Unit filename="IMUSensor.cpp" />
 		<Unit filename="IMUSensor.h" />
+		<Unit filename="Kalman.h" />
 		<Unit filename="MPU6050/MPU6050.cpp" />
 		<Unit filename="MPU6050/MPU6050.h" />
 		<Unit filename="MPU6050/MPU6050_6Axis_MotionApps20.cpp" />

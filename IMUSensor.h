@@ -2,6 +2,7 @@
 #define IMUSENSOR_H
 
 #include "CommunicationDefinitions.h"
+#include "Kalman.h"
 
 // MotionApps 2.0 DMP implementation, built using the MPU-6050EVB evaluation board
 #define MPU6050_INCLUDE_DMP_MOTIONAPPS20
@@ -23,9 +24,17 @@ public:
     void Reset() { isReset = true; }
 
 private:
-    int azim;
-    int elev;
-    int roll;
+    int azim;           // Calculated angle using a Kalman filter
+    int elev;           // Calculated angle using a Kalman filter
+    int roll;           // Calculated angle using a Kalman filter
+
+    double rawAzim;     // Angle calculate using the gyro only
+    double rawElev;     // Angle calculate using the gyro only
+    double rawRoll;     // Angle calculate using the gyro only
+    Kalman kalmanAzim;  // Create the Kalman instances
+    Kalman kalmanElev;
+    Kalman kalmanRoll;
+    uint32_t timer;     // last data read
 
     bool isReset;
     int azimOffset;
