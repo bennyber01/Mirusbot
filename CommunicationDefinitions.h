@@ -19,7 +19,7 @@
 #define UCHAR unsigned char
 #endif
 
-#define _DEBUG
+//#define _DEBUG
 
 struct MotorsSpeed
 {
