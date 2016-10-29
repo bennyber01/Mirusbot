@@ -4,8 +4,12 @@
 #include "CommunicationDefinitions.h"
 #include <NXTI2CDevice-master/NXTMMX.h>
 
-#define MOTOR_R MMX_Motor_1
-#define MOTOR_L MMX_Motor_2
+#define MOTOR_L MMX_Motor_1
+#define MOTOR_R MMX_Motor_2
+
+#define ROBOT_NORMAL_SPEED 35
+#define TACHOS_IN_CM       12.1                  // 1cm = 35 deg for small wheels
+#define TACHOS_IN_DEG      (776.0 / 180.0)       // 180 deg = 2520 tachos for small wheel (2524.0 last was used)
 
 class MotorsModule : public ArduinoModule
 {

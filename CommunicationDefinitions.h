@@ -19,6 +19,8 @@
 #define UCHAR unsigned char
 #endif
 
+#define _DEBUG
+
 struct MotorsSpeed
 {
     MotorsSpeed() { memset(this, 0, sizeof(MotorsSpeed)); }

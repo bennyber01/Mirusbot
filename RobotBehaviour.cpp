@@ -15,8 +15,11 @@ RobotBehaviour::RobotBehaviour()
 //    //actionQueue.Push(AT__ROTATE_RIGHT, 90);
 //    actionQueue.Push(AT__GO_FORWARD, 20);
 
-    eventQueue.Push(ET__GO_TO, 0, 20);
+    eventQueue.Push(ET__GO_TO, 0, 60);
     eventQueue.Push(ET__GO_TO, 40, 20);
+
+  //  commandQueue.Push(CT__ROTATE_RIGHT, 118);
+  //  commandQueue.Push(CT__ROTATE_IN_PLACE_RIGHT, 118);
 }
 
 RobotBehaviour::~RobotBehaviour()
@@ -130,6 +133,25 @@ void RobotBehaviour::GoToLocation(double x, double y)
     Vector2D pos = (robotWeelsLocation.leftWheelLoc + robotWeelsLocation.rightWheelLoc) * 0.5;
     int dist_cm = (int) ComputeDistance(pos, dest);
     commandQueue.Push(CT__GO_FORWARD, dist_cm);
+
+#ifdef _DEBUG
+    if (1)
+    {
+        Serial.print("pos(");
+        Serial.print(pos.x);
+        Serial.print(",");
+        Serial.print(pos.y);
+        Serial.print("), dest(");
+        Serial.print(x);
+        Serial.print(",");
+        Serial.print(y);
+        Serial.print("), ang(");
+        Serial.print(ang_deg);
+        Serial.println("), dist(");
+        Serial.print(dist_cm);
+        Serial.println(")");
+    }
+#endif
 }
 
 void RobotBehaviour::LookStraight()

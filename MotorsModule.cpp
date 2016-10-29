@@ -165,16 +165,15 @@ void MotorsModule::GoDistance_cm(int cm)
 {
     isHandlingEvent = true;
 
-    // 1cm = 35 deg
-    long degs = cm * 35;
+    long tachos = (long) (double(cm) * TACHOS_IN_CM);
 
 //    mmx.startMotorsInSync();
     mmx.runTachometer(
                       MMX_Motor_Both,
                       //MMX_Motor_2,
                       MMX_Direction_Forward,
-                      MMX_Speed_Medium,
-                      degs,
+                      ROBOT_NORMAL_SPEED,
+                      tachos,
                       MMX_Move_Relative,
                       //MMX_Completion_Wait_For,
                       MMX_Completion_Dont_Wait,
@@ -187,8 +186,7 @@ void MotorsModule::Rotate_deg(int deg, bool rotateRight)
 {
     isHandlingEvent = true;
 
-    // 180 deg = 2520 tachos
-    long tachos = (long) ((double)deg) * 2524.0 / 180.0;
+    long tachos = (long) (double(deg) * TACHOS_IN_DEG);
 
     uint8_t motor = (rotateRight) ? MOTOR_L : MOTOR_R;
 
@@ -196,7 +194,7 @@ void MotorsModule::Rotate_deg(int deg, bool rotateRight)
     mmx.runTachometer(
                       motor,
                       MMX_Direction_Forward,
-                      MMX_Speed_Medium,
+                      ROBOT_NORMAL_SPEED,
                       tachos,
                       MMX_Move_Relative,
                       //MMX_Completion_Wait_For,
@@ -210,8 +208,7 @@ void MotorsModule::RotateInPlace_deg(int deg, bool rotateRight)
 {
     isHandlingEvent = true;
 
-    // 180 deg = 2520 tachos
-    long tachos = (long) ((double)deg) * 2524.0 / 360.0;
+    long tachos = (long) (double(deg) * TACHOS_IN_DEG * 0.5);
 
     uint8_t l_motor_dir = MMX_Direction_Reverse;
     uint8_t r_motor_dir = MMX_Direction_Forward;
@@ -221,11 +218,11 @@ void MotorsModule::RotateInPlace_deg(int deg, bool rotateRight)
         r_motor_dir = MMX_Direction_Reverse;
     }
 
-//    mmx.startMotorsInSync();
+    //mmx.startMotorsInSync();
     mmx.runTachometer(
                       MOTOR_L,
                       l_motor_dir,
-                      MMX_Speed_Medium,
+                      ROBOT_NORMAL_SPEED / 2,
                       tachos,
                       MMX_Move_Relative,
                       //MMX_Completion_Wait_For,
@@ -237,7 +234,7 @@ void MotorsModule::RotateInPlace_deg(int deg, bool rotateRight)
     mmx.runTachometer(
                       MOTOR_R,
                       r_motor_dir,
-                      MMX_Speed_Medium,
+                      ROBOT_NORMAL_SPEED / 2,
                       tachos,
                       MMX_Move_Relative,
                       //MMX_Completion_Wait_For,

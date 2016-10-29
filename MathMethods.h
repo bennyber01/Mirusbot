@@ -18,9 +18,9 @@ inline double ComputeDistance(const Vector2D & v0, const Vector2D & v1) { return
 
 inline double ComputeAngle_deg(const Vector2D & from, const Vector2D & to)
 {
-    double cos_alpha_rad = atan2(from.y, from.x) - atan2(to.y, to.x);
-    double cos_alpha_deg = rad_2_deg(cos_alpha_rad);
-    return cos_alpha_deg;
+    double alpha_rad = atan2(from.y, from.x) - atan2(to.y, to.x);
+    double alpha_deg = rad_2_deg(alpha_rad);
+    return alpha_deg;
 }
 
 inline double ComputeRotationInPlaceAngleToCoord(WheelsLocation robotWeelsLocation, const Vector2D & coord)

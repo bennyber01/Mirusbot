@@ -26,7 +26,7 @@ private:
     int azim;
     int elev;
 
-    MiniMaestro maestro;
+    MicroMaestro maestro;
 };
 
 #endif // CAMERAMODULE_H
